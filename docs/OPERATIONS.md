@@ -125,7 +125,7 @@ Latest evidence supplied for this documentation on 22 September 2026:
 | Native Firestore smoke | Passed: nested workspace roundtrip, audit verification after map serialization, four concurrent increments, deliberate-abort rollback. Temporary smoke documents removed. |
 | Deployed health | Passed: `GET /api/health` performed a store read and returned healthy. |
 | Deployed demo | Passed: demo creation returned HTTP 201 with Firestore and configured Vertex capability. |
-| Actual Vertex inference | Passed: canonical hosted smoke returned `analysis.engine="vertex"`, model `gemini-2.5-flash-lite`, and two validated citations. Fresh mobile browser analysis also returned Vertex evidence. |
+| Actual Vertex inference | Passed: canonical hosted smoke returned `analysis.engine="vertex"`, model `gemini-2.5-flash-lite`, and three validated citations. Fresh mobile browser analysis also returned Vertex evidence. |
 | Desktop browser journey | Hosted application at 1920px: share, client swap, receipt, and owner update verified; $12,000 budget/date unchanged; 96h becomes 92h. No desktop errors observed. |
 | Mobile browser journey | At 390px: create project, execute Vertex analysis with a source quote, share, defer, receive receipt, and revisit as a fresh draft. Original deferral preserved. No horizontal overflow in visited views. |
 | Existing-owner mobile login | Passed: invalid password shows an error; correct login opens the empty private workspace; refresh retains the session; no horizontal overflow at 390px. |

@@ -40,7 +40,7 @@ Submitted for Galuxium Nexus V2.
 - [x] AI narration disclosed and the platform's AI-use label selected.
 - [x] Platform copyright and community checks reported no issues.
 - [x] Verify playback on the published watch page and unauthenticated oEmbed access.
-- [ ] Confirm the actual published URL is saved in the completed Devpost entry.
+- [x] Confirm the actual published URL is saved in the completed [Devpost entry](https://devpost.com/software/pactshift). Embedded playback and English captions were verified after submission.
 
 Final MP4 SHA-256: `f0379d0d6ca7239a56d7f3fb0246842ec407e043972767692c66cc023a2256b8`.
 

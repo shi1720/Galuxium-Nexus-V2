@@ -1,8 +1,8 @@
 # Pactshift: Galuxium Nexus V2 submission pack
 
-Prepared **22 September 2026** for **Shivam Gupta**, founder and product owner, and the existing Devpost project **1192668**. The seven story fields below are ready to paste into the application. The canonical app at https://pactshift.web.app is verified, and the product video is published. The evidence register is not proof of final Devpost submission.
+Prepared **22 September 2026** for **Shivam Gupta**, founder and product owner, and the existing Devpost project **1192668**. The seven story fields below are ready to paste into the application. The canonical app at https://pactshift.web.app is verified, and the product video is published. Devpost confirmed the final submission on 22 September; see [submission evidence](SUBMISSION_EVIDENCE.json).
 
-**Participation gate:** Public rules and organizer updates were reviewed on 22 September. Existing Devpost edit access and $10 in free Backboard participant credits are verified. Original roster timing remains unknown. Discord requires the user's login/join action, and final Devpost submission is not yet confirmed. See the [event checklist](EVENT_CHECKLIST.md).
+**Participation gate:** Public rules and organizer updates were reviewed on 22 September. Existing Devpost edit access and $10 in free Backboard participant credits are verified. Original roster timing remains unknown. Discord requires the user's login/join action, and final Devpost submission is confirmed. See the [event checklist](EVENT_CHECKLIST.md).
 
 ## Application fields
 
@@ -130,7 +130,7 @@ This maps the supplied event rubric to reviewable evidence. It is not a self-awa
 | Product innovation and market fit | 20% | Client pay/swap/defer flow followed by a changed baseline; direct competitor research; focused customer hypothesis. | Market fit and willingness to pay remain unvalidated. |
 | Monetization and fiscal design | 15% | Published proposed plans; usage bounds; optional Stripe subscription lifecycle; primary-source cost assumptions and stress case. | No verified revenue; payment activation is configuration-dependent. |
 | UI/UX and visual refinement | 15% | Hosted desktop swap and mobile creation/analysis/share/defer/revisit verified; no horizontal overflow in visited mobile views; closed-menu accessibility fix verified. | Targeted browser checks, not comprehensive accessibility certification. |
-| Keynote and demo completeness | 10% | Public 3:21 captioned film with authentic hosted views, disclosed AI narration, and the persisted decision workflow. | Public playback verified; Discord access and final submission confirmation remain separate. |
+| Keynote and demo completeness | 10% | Public 3:21 captioned film with authentic hosted views, disclosed AI narration, and the persisted decision workflow. | Public playback and Devpost submission confirmed; Discord login/join remains a separate participation requirement. |
 
 ## Final submission evidence register
 
@@ -139,13 +139,13 @@ Update each item with an actual date, URL, command result, or artifact. “Desig
 | Gate | Evidence to record | Current record |
 | --- | --- | --- |
 | Official eligibility | Official rules reviewed; account/participant requirements resolved. | Existing project/edit access and $10 free Backboard credits verified. Discord login/join remains required; original roster timing unknown. See [EVENT_CHECKLIST.md](EVENT_CHECKLIST.md). |
-| Public repository | Logged-out URL access and release commit. | Public GitHub repository verified; application commit `80eece9`, CI passed. Final documentation is tracked separately. |
+| Public repository | Logged-out URL access and release commit. | Public GitHub repository verified with main as its default and only branch. CI passed for deployed source commit `4364f86`; final deployment and evidence commits are recorded in [DEPLOYMENT.json](DEPLOYMENT.json). |
 | Public live demo | HTTPS URL, readiness result, logged-out demo run. | All 21 hosted checks passed at `https://pactshift.web.app`; static assets, sessions, health, origins, and persistence verified. |
 | Working core flow | Fresh session shares/accepts swap; owner sees new baseline. | Hosted 1920px desktop swap preserved $12,000/date and changed 96h to 92h. At 390px, project creation, Vertex analysis, sharing, deferral, receipt, and revisit as a fresh draft passed. Original receipt preserved. |
 | Build and automated checks | Commands, pass/fail totals, release commit. | 46 automated tests passed; build passed; dependency audit reported zero vulnerabilities. Final immutable deployment metadata is tracked in [DEPLOYMENT.json](DEPLOYMENT.json). |
 | Persistence | Native adapter behavior and deployed runtime access. | Native Firestore roundtrip, canonical audit check, concurrent increments, and rollback smoke passed. Deployed health/demo passed with Firestore capability. Final-revision hosted smoke passed; all disposable fixtures deleted. |
 | Billing | Configuration state; test checkout/webhook/portal evidence if enabled. | Optional; no real payment claimed. |
-| Live AI | Actual new request result, not only capability configuration. | Canonical smoke returned Vertex engine, `gemini-2.5-flash-lite`, and two validated citations; fresh mobile browser analysis also verified. |
+| Live AI | Actual new request result, not only capability configuration. | Canonical smoke returned Vertex engine, `gemini-2.5-flash-lite`, and three validated citations; fresh mobile browser analysis also verified. |
 | Video | 2–5 minute playable link with clear narration and UI. | [Public 3:21 video](https://youtu.be/BF9QX1_Pppg) published with 63 captions and AI disclosure. Public watch-page playback and unauthenticated oEmbed verified; see [VIDEO_METADATA.md](VIDEO_METADATA.md). |
 | Documentation | README, schema, architecture, sources, business brief reviewed against code. | Prepared and reviewed: five-page PDF and seven-slide PPTX visually checked, real screenshot included, source/link checks completed. |
 | Attribution | Accurate founder and AI-assistance disclosure. | Copy supplied above. |

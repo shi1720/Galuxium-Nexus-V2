@@ -1,6 +1,6 @@
 {
   "base": "https://pactshift.web.app",
-  "at": "2026-09-22T05:05:37.854Z",
+  "at": "2026-09-22T05:33:27.773Z",
   "checks": [
     "public application serves with security policy",
     "compiled application assets are reachable",
@@ -25,27 +25,27 @@
     "deleted workspace invalidates client link"
   ],
   "durationsMs": [
-    1613,
-    823,
-    679,
-    694,
-    566,
-    458,
-    466,
-    391,
-    501,
-    605,
-    1965,
-    952,
-    525,
-    543,
-    389,
-    886,
-    324,
+    1188,
+    602,
     548,
-    458,
-    384,
-    438
+    530,
+    757,
+    742,
+    745,
+    485,
+    791,
+    523,
+    2307,
+    949,
+    461,
+    495,
+    494,
+    1027,
+    340,
+    461,
+    455,
+    361,
+    476
   ],
   "cleanup": [
     "registered test account deleted",
@@ -55,10 +55,10 @@
   "analysis": {
     "engine": "vertex",
     "model": "gemini-2.5-flash-lite",
-    "citationCount": 2
+    "citationCount": 3
   },
   "result": "pass",
   "requestCount": 21,
-  "medianMs": 543,
-  "maxMs": 1965
+  "medianMs": 530,
+  "maxMs": 2307
 }

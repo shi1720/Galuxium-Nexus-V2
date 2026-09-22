@@ -11,7 +11,10 @@
     "custom_thumbnail": true,
     "caption_track": "English, manually supplied 63-cue SRT",
     "ai_use_disclosed": true,
-    "platform_checks": "YouTube copyright and community checks reported no issues."
+    "platform_checks": "YouTube copyright and community checks reported no issues.",
+    "public_playback": "Verified 1920 x 1080 playback, advancing player time and no media error; settings showed English captions.",
+    "unauthenticated_embed": "YouTube oEmbed returned HTTP 200 and the correct title and embed URL.",
+    "devpost_embed": "Verified advancing playback and English captions in the submitted Devpost project."
   },
   "video": {
     "path": "deliverables/Pactshift-demo.mp4",

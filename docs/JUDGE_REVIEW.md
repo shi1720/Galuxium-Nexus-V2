@@ -42,7 +42,7 @@ The updated source also keeps the difference between configured Vertex capabilit
 4. **Produced and published:** the 3:21 product film has 63 captions and disclosed AI narration. Public watch-page playback and unauthenticated oEmbed access are verified in [VIDEO_METADATA.md](VIDEO_METADATA.md).
 5. **Completed release checks:** public repository available, 46 tests passing, build passing, no reported dependency-audit vulnerabilities, and 21 passing Firebase-origin checks. Final commit/deployment metadata must match the published release.
 6. **Intentionally unavailable:** merchant billing remains unconfigured. No paid usage or successful live checkout is claimed.
-7. **Participation remaining:** Discord requires the user's login/join action; final Devpost submission confirmation is not yet recorded. Backboard signup, email verification, and $10 participant-credit redemption are complete.
+7. **Participation remaining:** Discord requires the user's login/join action; Devpost confirmed the final submission on 22 September. Backboard signup, email verification, and $10 participant-credit redemption are complete.
 
 ## Earlier checkpoint after initial workflow: 72 / 100
 
@@ -70,9 +70,9 @@ The release now has 46 passing automated tests, a successful build, and a depend
 | Innovation and market fit | 12/20 | Clear scope-exchange workflow in a competitive category; no buyer or repeat-use validation yet. |
 | Monetization | 9/15 | Defined plans and grounded cost assumptions; paid checkout and willingness to pay are unverified. |
 | UI/UX | 14/15 | Actual desktop/mobile paths verified, historical-export and calendar-date issues fixed, and closed-menu accessibility state checked. Broader usability research remains. |
-| Keynote and completeness | 8/10 | Captioned 3:21 film publicly published, live product and submission materials complete. Public playback verified; final event-submission confirmation remains separate. |
+| Keynote and completeness | 8/10 | Captioned 3:21 film publicly published, live product and submission materials complete. Public playback and final Devpost submission verified. |
 
-This is an internal, subjective assessment, not an official judge score or assurance of placement. The remaining commercial evidence cannot be replaced by additional polish. Published event participation requirements and the final submission receipt must still be verified independently of this estimate.
+This is an internal, subjective assessment, not an official judge score or assurance of placement. The remaining commercial evidence cannot be replaced by additional polish. The actual Devpost submission receipt is recorded independently of this estimate. Discord login/join remains outstanding.
 
 ## Commercial critique
 
@@ -102,6 +102,6 @@ The operator subsequently reported **46 passing tests, a passing production buil
 | Preserve calendar dates across time zones. | A midnight UTC conversion could show the previous date to a client in the Americas. | **Implemented:** date-only values render with their agreed calendar day preserved. |
 | Show the same project count that plan limits use. | An archived project still consumes an allowance, so an active-only usage counter misleads the owner. | **Implemented:** plan usage displays stored projects, including archives. |
 | Export the agreement version being viewed. | An owner inspecting a historical baseline could otherwise download the current terms by mistake. | **Implemented:** export and visible version use the selected baseline's version, date, budget, and deliverables. |
-| Finish the hosted browser journey and release video. | Source/API checks cannot establish readable mobile controls or smooth browser navigation. | **Completed targeted checks:** desktop swap and mobile creation/analysis/deferral/revisit passed; 3:21 film published. Public playback verified; broader accessibility research and final submission confirmation remain distinct. |
+| Finish the hosted browser journey and release video. | Source/API checks cannot establish readable mobile controls or smooth browser navigation. | **Completed targeted checks:** desktop swap and mobile creation/analysis/deferral/revisit passed; 3:21 film published. Public playback and Devpost submission confirmed; broader accessibility research remains unclaimed. |
 
 The strongest judging story remains the visible client decision and resulting agreement. Keep the film focused on the 16-hour-to-12-hour exchange, unchanged $12,000 budget and date, and saved version two. Present transparent AI support and the transaction rules as reasons that workflow is dependable. Customer demand, recurring use, and willingness to pay remain the commercial evidence still to earn.

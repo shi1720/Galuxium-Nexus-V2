@@ -1,17 +1,34 @@
 {
-  "revision": "pactshift-00003-k8c",
-  "createdAt": "2026-09-22T04:43:08.466007Z",
-  "sourceCommit": "80eece902270a020dccf2a0107a1865c8b44b4ea",
-  "imageDigest": "us-central1-docker.pkg.dev/gen-lang-client-0444960702/cloud-run-source-deploy/pactshift@sha256:21b2f3a65573cd044f4f31ed5ad43c342997a5f58e06ddd1e38e8622a40e2a2f",
-  "url": "https://pactshift-wh46bdeima-uc.a.run.app",
+  "revision": "pactshift-00005-ls8",
+  "createdAt": "2026-09-22T05:32:52.871037Z",
+  "sourceCommit": "4364f864c80fc6bddd8b8669cf4f8a9a87207817",
+  "imageDigest": "us-central1-docker.pkg.dev/gen-lang-client-0444960702/cloud-run-source-deploy/pactshift@sha256:9c3963fb16e18258341168725dcfd411bf61ea9e038bdd6877768652028bca74",
+  "url": "https://pactshift.web.app",
+  "hostingSite": "pactshift",
+  "cloudRunService": "pactshift",
   "region": "us-central1",
   "trafficPercent": 100,
-  "ci": "https://github.com/shi1720/Galuxium-Nexus-V2/actions/runs/35687887776",
+  "apiRewrite": "Firebase Hosting /api/** to pinned Cloud Run revision",
+  "deploymentScript": "scripts/deploy.sh",
+  "ci": "https://github.com/shi1720/Galuxium-Nexus-V2/actions/runs/35691198811",
   "ciConclusion": "success",
+  "verification": {
+    "cleanInstall": true,
+    "testsPassed": 46,
+    "build": "pass",
+    "dependencyAuditVulnerabilities": 0,
+    "hostedChecksPassed": 21,
+    "hostedEvidence": "docs/RELEASE_EVIDENCE.json",
+    "browserEvidence": "docs/BROWSER_EVIDENCE.json",
+    "video": "https://youtu.be/BF9QX1_Pppg",
+    "submission": "https://devpost.com/software/pactshift",
+    "submissionEvidence": "docs/SUBMISSION_EVIDENCE.json"
+  },
   "limitations": [
-    "No finished video or final Devpost submission",
-    "Stripe merchant configuration absent",
-    "Final hosted browser and mobile verification not completed",
-    "No verified customers or revenue"
+    "Paid checkout awaits Stripe merchant configuration and provider test flow",
+    "No verified paying customers or revenue",
+    "Discord membership requires the user to sign in and join the event server",
+    "Targeted responsive Chromium checks do not constitute comprehensive browser or accessibility certification",
+    "Documented storage and usage bounds apply; independent security audit and complete restore drill are not claimed"
   ]
 }

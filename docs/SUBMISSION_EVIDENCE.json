@@ -1,0 +1,30 @@
+{
+  "project": "Pactshift",
+  "submissionId": 1192668,
+  "submittedOn": "2026-09-22",
+  "status": "submitted",
+  "url": "https://devpost.com/software/pactshift",
+  "confirmation": "Project submitted! Continue to edit your project until the hackathon deadline: October 31, 2026 at 07:30am EDT.",
+  "savedFields": [
+    "Project name and elevator pitch",
+    "Seven-section Markdown story, builder disclosure and testing instructions",
+    "Ten implementation tags",
+    "Firebase application, public repository and judge testing-guide links",
+    "Branded thumbnail and four captioned gallery images",
+    "Public YouTube video link",
+    "Pactshift-submission.zip judge attachment",
+    "Founder and project-owner contribution"
+  ],
+  "video": "https://youtu.be/BF9QX1_Pppg",
+  "embeddedPlayback": "Elapsed time advanced to 3 seconds; Subtitles/CC turned on and actual first narration caption visible",
+  "attachment": {
+    "name": "Pactshift-submission.zip",
+    "bytes": 8646835,
+    "sha256": "b1df47f6b0da7c9f42f11d28b34d38de644d7b478e78647717974345dfd62c1f"
+  },
+  "participation": {
+    "backboard": "Account verified and $10 participant credits redeemed; no paid plan or card added",
+    "discord": "Login and joining official event server still require the user",
+    "registrationTiming": "Original registration time was not independently verified"
+  }
+}

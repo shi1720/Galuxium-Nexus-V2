@@ -1,6 +1,6 @@
 # Galuxium Nexus V2: submission and eligibility checklist
 
-**Updated 22 September 2026.** The existing Devpost project 1192668 and signed-in edit access are verified. Backboard account signup, email verification, and redemption of **$10 in free participant credits** are complete. The product video is published publicly. Original roster timing remains unknown, Discord still requires the user's login and join action, and final Devpost submission has not been confirmed. No paid partner activation or Backboard application integration is claimed.
+**Updated 22 September 2026.** The existing Devpost project 1192668 and signed-in edit access are verified. Backboard account signup, email verification, and redemption of **$10 in free participant credits** are complete. The product video is published publicly. Original roster timing remains unknown, Discord still requires the user's login and join action, and Devpost has confirmed the final submission. No paid partner activation or Backboard application integration is claimed.
 
 ## Dates to use
 
@@ -53,8 +53,8 @@ These descriptions cannot establish a single reliable payout expectation. The we
 - [x] Produce and publish the [3:21 product video](https://youtu.be/BF9QX1_Pppg), with disclosed AI narration and 63 captions. [Video evidence](VIDEO_EVIDENCE.json).
 - [x] Complete the public watch-page playback and unauthenticated oEmbed checks. The event makes the video mandatory. [Submission requirements](https://galuxium-nexus-v2-29411.devpost.com/)
 - [x] Verify the [live app](https://pactshift.web.app) and [public repository](https://github.com/shi1720/Galuxium-Nexus-V2). Canonical hosted smoke and desktop/mobile product journeys passed.
-- [x] Save the reviewed [application copy](SUBMISSION.md), gallery, video, ZIP, and application/repository links. Four of five Devpost steps are saved; this is not final submission.
-- [ ] Confirm fictional demonstration data, proposed pricing, disabled paid checkout, and AI-assisted contribution wording remain accurate.
-- [ ] Submit before the deadline and retain the actual Devpost submission receipt/status. None has been recorded yet.
+- [x] Save the reviewed [application copy](SUBMISSION.md), gallery, video, ZIP, and application/repository links. All fields were saved and the project was submitted successfully.
+- [x] Confirm fictional demonstration data, proposed pricing, disabled paid checkout, and AI-assisted contribution wording remain accurate.
+- [x] Submit before the deadline and retain the actual Devpost submission receipt/status. The UI confirmed 'Project submitted!' on 22 September. [Submission evidence](SUBMISSION_EVIDENCE.json).
 
-The five-page [executive brief](../deliverables/Pactshift-brief.pdf), seven-slide [editable pitch](../deliverables/Pactshift-pitch.pptx), and 3:21 captioned video have been produced and reviewed. Remaining Discord and final-entry actions must be confirmed in the actual accounts.
+The five-page [executive brief](../deliverables/Pactshift-brief.pdf), seven-slide [editable pitch](../deliverables/Pactshift-pitch.pptx), and 3:21 captioned video have been produced and reviewed. The Devpost submission is confirmed. Discord membership still requires the user's login and join action.

@@ -1,6 +1,6 @@
 # Pactshift: handoff for Shivam
 
-**Pactshift is live, the desktop and mobile workflows are verified, and the 3:21 demo is published. Discord access and final Devpost submission confirmation remain outstanding.**
+**Pactshift is live, the desktop and mobile workflows are verified, and the 3:21 demo is published. The [Devpost entry](https://devpost.com/software/pactshift) is submitted. Discord login/join remains outstanding.**
 
 [Open Pactshift](https://pactshift.web.app) · [Watch the demo](https://youtu.be/BF9QX1_Pppg) · [Public source](https://github.com/shi1720/Galuxium-Nexus-V2) · [Seven-field project story](docs/PROJECT_STORY.md)
 
@@ -31,7 +31,7 @@ The materials credit you as founder and builder and disclose substantial AI assi
 
 ## Completion record and remaining steps
 
-**Confirm the final entry.** The [3:21 demo](https://youtu.be/BF9QX1_Pppg) was published publicly with an English caption track, custom thumbnail, and AI-use disclosure. Public watch-page playback and unauthenticated oEmbed access are verified. Existing Devpost project 1192668 has its fields, gallery, video, and ZIP saved through four of five steps; final submission has not yet been confirmed. Use the actual video URL in the entry and retain its final submission status.
+**The entry is submitted.** The [3:21 demo](https://youtu.be/BF9QX1_Pppg) was published publicly with an English caption track, custom thumbnail, and AI-use disclosure. Public watch-page playback and unauthenticated oEmbed access are verified. Devpost confirmed 'Project submitted!' for entry 1192668 on 22 September. The public page displays Galuxium Nexus V2 under Submitted to, and its embedded video plays with English captions. All story fields, technology tags, app/repository/testing links, the cover and gallery, and the judge ZIP are saved. See [submission evidence](docs/SUBMISSION_EVIDENCE.json).
 
 **Log in to Discord and join the event server.** Use the [official invitation](https://discord.com/invite/J3Tbd3vXdr). No usable Discord login was available to complete membership. The [organizer makes joining mandatory](https://galuxium-nexus-v2-29411.devpost.com/updates/45996-official-board-notice-expansion-to-q4-global-summit-timeline-extension). Backboard signup, email verification, and **$10 in free participant credits** were successfully completed on 22 September; no API key or Backboard product integration was needed. The [event checklist](docs/EVENT_CHECKLIST.md) retains the original roster-timing ambiguity and differing published prize terms. No cash payout is assumed.
 
