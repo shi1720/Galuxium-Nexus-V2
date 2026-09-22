@@ -16,7 +16,7 @@ import {
   Wallet,
   X,
 } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import {
   BrowserRouter,
   Link,
@@ -120,10 +120,26 @@ export function Shell() {
   const { data, setData } = useApp(),
     nav = useNavigate();
   const [mobile, setMobile] = useState(false);
+  const menuButton = useRef<HTMLButtonElement>(null);
+  useEffect(() => {
+    if (!mobile) return;
+    const closeOnEscape = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        setMobile(false);
+        menuButton.current?.focus();
+      }
+    };
+    window.addEventListener("keydown", closeOnEscape);
+    return () => window.removeEventListener("keydown", closeOnEscape);
+  }, [mobile]);
   if (!data) return null;
   return (
     <div className="app-shell">
-      <aside className={"sidebar " + (mobile ? "open" : "")}>
+      <aside
+        id="workspace-navigation"
+        aria-label="Workspace navigation"
+        className={"sidebar " + (mobile ? "open" : "")}
+      >
         <Logo />
         <div className="workspace-switch">
           <span className="workspace-avatar">
@@ -164,11 +180,11 @@ export function Shell() {
             </div>
             <strong>Room for better decisions.</strong>
             <p>One agreed change is one less difficult conversation.</p>
-            <Link to="/app/billing">
+            <Link to="/app/billing" onClick={() => setMobile(false)}>
               Explore plans <ArrowUpRight size={14} />
             </Link>
           </div>
-          <nav>
+          <nav onClick={() => setMobile(false)}>
             <NavLink to="/app/settings">
               <Settings size={18} /> Settings
             </NavLink>
@@ -208,11 +224,14 @@ export function Shell() {
       <div className="app-main">
         <header className="app-topbar">
           <button
+            ref={menuButton}
             className="icon-btn mobile-menu"
-            aria-label="Open navigation"
+            aria-label={mobile ? "Close navigation" : "Open navigation"}
+            aria-expanded={mobile}
+            aria-controls="workspace-navigation"
             onClick={() => setMobile(!mobile)}
           >
-            <Menu />
+            {mobile ? <X /> : <Menu />}
           </button>
           <div className="breadcrumb">
             Workspace <ChevronRight size={14} />{" "}

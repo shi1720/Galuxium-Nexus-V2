@@ -3637,12 +3637,14 @@ select {
   }
   .sidebar {
     transform: translateX(-100%);
+    visibility: hidden;
     transition: transform 0.2s;
     width: 230px;
     box-shadow: 10px 0 30px #173e3210;
   }
   .sidebar.open {
     transform: translateX(0);
+    visibility: visible;
   }
   .sidebar > .logo {
     font-size: 24px;
