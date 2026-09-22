@@ -1,0 +1,17 @@
+{
+  "liveUrl": "https://pactshift-wh46bdeima-uc.a.run.app",
+  "screenshot": "scripts/artifacts/request-detail.png",
+  "screenshotSource": "docs/images/request.png",
+  "screenshotCropPixels": [240, 230, 1157, 687],
+  "example": {
+    "budget": 12000,
+    "baselineHours": 96,
+    "costRate": 60,
+    "hours": 12,
+    "laborCost": 720,
+    "margin": 0.52,
+    "absorbMargin": 0.46,
+    "fee": 1500,
+    "swapHours": 16
+  }
+}

@@ -1,0 +1,17 @@
+{
+  "revision": "pactshift-00003-k8c",
+  "createdAt": "2026-09-22T04:43:08.466007Z",
+  "sourceCommit": "80eece902270a020dccf2a0107a1865c8b44b4ea",
+  "imageDigest": "us-central1-docker.pkg.dev/gen-lang-client-0444960702/cloud-run-source-deploy/pactshift@sha256:21b2f3a65573cd044f4f31ed5ad43c342997a5f58e06ddd1e38e8622a40e2a2f",
+  "url": "https://pactshift-wh46bdeima-uc.a.run.app",
+  "region": "us-central1",
+  "trafficPercent": 100,
+  "ci": "https://github.com/shi1720/Galuxium-Nexus-V2/actions/runs/35687887776",
+  "ciConclusion": "success",
+  "limitations": [
+    "No finished video or final Devpost submission",
+    "Stripe merchant configuration absent",
+    "Final hosted browser and mobile verification not completed",
+    "No verified customers or revenue"
+  ]
+}

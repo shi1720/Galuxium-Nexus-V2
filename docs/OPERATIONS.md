@@ -1,0 +1,166 @@
+# Pactshift operations runbook
+
+**22 September 2026 · Maintainer: Shivam Gupta**
+
+This runbook distinguishes configuration from verified behavior. A provider capability flag means configuration is present; a successful provider operation requires separate evidence. The service is an early production release with bounded resources and no promised SLA.
+
+## Deployed environment
+
+| Setting | Current deployment record |
+| --- | --- |
+| Public URL | [pactshift-wh46bdeima-uc.a.run.app](https://pactshift-wh46bdeima-uc.a.run.app) |
+| Cloud Run service / region | `pactshift` / `us-central1` |
+| Google Cloud project | `gen-lang-client-0444960702`, an existing shared project. |
+| Database | Isolated named Firestore database `pactshift`; application collection `pactshift`. |
+| Runtime identity | Dedicated service account; inspect the service to obtain the configured email. |
+| Database permission | `roles/datastore.user` with a database-scoped IAM condition. |
+| AI permission | Runtime identity granted the required Vertex role. |
+| Runtime bounds | Minimum 0, maximum 2 instances; 512 MiB memory; concurrency 40; request timeout 60 seconds. |
+| AI | Vertex, global endpoint, `gemini-2.5-flash-lite`; default 200 attempted analyses/day across the deployment. |
+| Billing | Not configured. Paid checkout intentionally disabled. |
+| Recovery | Firestore point-in-time recovery enabled with a seven-day retention window, subject to the database's earliest recoverable timestamp. |
+
+A named Firestore database does not receive the default database's free quota. Cloud Run free allowances are shared across a billing account, including unrelated projects. Do not describe this deployment as guaranteed free. See [BUSINESS.md](BUSINESS.md) for cost assumptions and [Google's pricing](https://cloud.google.com/firestore/pricing).
+
+## Configuration reference
+
+The server reads process environment variables. `.env.example` is a reference, not an automatic loader.
+
+| Variable | Purpose / default |
+| --- | --- |
+| `PORT` | API listener; 8080 locally and in the container. |
+| `NODE_ENV` | `production` enables secure production cookies and startup requirements. |
+| `APP_ORIGIN` | Exact trusted browser origin; local default `http://localhost:5173`. Production requires HTTPS. |
+| `DATA_BACKEND` | `firestore` required in production; otherwise local adapter. |
+| `DATA_FILE` | Local JSON file; `.data/pactshift.json`. |
+| `GOOGLE_CLOUD_PROJECT` | Project used by the Firestore/Vertex client. |
+| `FIRESTORE_DATABASE_ID` | Named database; default `(default)` if omitted. Current deployment uses `pactshift`. |
+| `AI_PROVIDER` | `vertex` to attempt provider analysis; unset uses rules. |
+| `VERTEX_LOCATION` | `global` by default. |
+| `VERTEX_MODEL` | `gemini-2.5-flash-lite` by default. |
+| `AI_DAILY_LIMIT` | Default 200; application clamps supported attempts to 0–2,000/day. |
+| `DEMO_DAILY_LIMIT` | Default 300 demo workspaces/day across the deployment. |
+| `STRIPE_SECRET_KEY` | Optional provider secret; use secret storage, never source control. |
+| `STRIPE_WEBHOOK_SECRET` | Optional signed-event verification secret. |
+| `STRIPE_STUDIO_PRICE_ID` | Optional monthly Studio price reference. |
+| `STRIPE_AGENCY_PRICE_ID` | Optional monthly Agency price reference. |
+
+Cloud runtime authentication uses the attached service identity. Do not create and commit a service-account JSON key to make deployment convenient. Local Firestore/Vertex development can use an explicitly selected application-default identity with access only to the intended development project/database.
+
+## Inspect before changing anything
+
+These read-only commands scope every action to the recorded project and region, avoiding accidental changes to other applications sharing the account:
+
+```bash
+gcloud run services describe pactshift \
+  --project=gen-lang-client-0444960702 \
+  --region=us-central1
+
+gcloud firestore databases describe \
+  --project=gen-lang-client-0444960702 \
+  --database=pactshift
+
+gcloud run revisions list \
+  --service=pactshift \
+  --project=gen-lang-client-0444960702 \
+  --region=us-central1
+```
+
+Inspect identity, environment-variable names, image revision, traffic routing, database ID, PITR state, and resource limits. Never paste secrets or private capability URLs into a public issue or release artifact.
+
+## Deploy a reviewed revision
+
+1. Run `npm ci`, `npm test`, `npm run typecheck`, and `npm run build` from the repository root. Review dependency audit output and the actual changes.
+2. Build the repository's Dockerfile using the intended build identity and artifact registry. Use an immutable image digest for the release record. The runtime image runs as a non-root user.
+3. Confirm the runtime service account has database-scoped Firestore access and, if enabled, Vertex access. The browser has no direct database role.
+4. Deploy the reviewed image, preserving the existing origin, database, service account, and optional secret references. Use explicit project/region flags and retain the small resource limits unless measurements justify a change.
+5. Verify the deployed URL, not only a local build. Record the revision name, image digest, timestamp, and test results.
+
+Example shape for an already provisioned service; replace the image and identity placeholders with the reviewed values:
+
+```bash
+gcloud run deploy pactshift \
+  --project=gen-lang-client-0444960702 \
+  --region=us-central1 \
+  --image=REVIEWED_IMAGE_DIGEST \
+  --service-account=REVIEWED_RUNTIME_SERVICE_ACCOUNT \
+  --memory=512Mi \
+  --concurrency=40 \
+  --timeout=60 \
+  --min=0 \
+  --max=2
+```
+
+This example intentionally does not replace environment variables, secrets, or IAM policy. New independent deployments must provision their own database and identity, set the required production values, and make the service publicly invocable if they need public browser access. Public invocation does not bypass application authentication. [Cloud Run deployment reference](https://docs.cloud.google.com/sdk/gcloud/reference/run/deploy)
+
+Per-database IAM conditions are supported for server-library access. Verify them with the actual runtime identity; do not infer isolation from what an administrator can see in the Cloud console. [Firestore database access](https://cloud.google.com/firestore/docs/manage-databases)
+
+## Release verification
+
+Latest evidence supplied for this documentation on 22 September 2026:
+
+| Check | Recorded result / remaining scope |
+| --- | --- |
+| Focused automated suite | 30 passing tests: 26 backend and 4 frontend after domain/API/form fixes. |
+| Native Firestore smoke | Passed: nested workspace roundtrip, audit verification after map serialization, four concurrent increments, deliberate-abort rollback. Temporary smoke documents removed. |
+| Deployed health | Passed: `GET /api/health` performed a store read and returned healthy. |
+| Deployed demo | Passed: demo creation returned HTTP 201 with Firestore and configured Vertex capability. |
+| Actual Vertex inference | Passed: a live new request returned `analysis.engine="vertex"`, model `gemini-2.5-flash-lite`, and one validated citation. |
+| Browser journey | Local Safari publish → client swap → receipt showing $12,000, October 20, version two → updated owner project verified. Hosted behavior separately verified through the real API. Actual local-browser screenshots captured in `docs/images`. |
+| Stripe | Unconfigured; no checkout completion or live charge claimed. |
+| Restore drill | PITR configured; a full recovery exercise has not been claimed. |
+
+The final deployed revision is **`pactshift-00003-k8c`**, serving 100% of traffic, built from application source commit `80eece902270a020dccf2a0107a1865c8b44b4ea`. The image digest and successful clean-install GitHub CI run are recorded in [DEPLOYMENT.json](DEPLOYMENT.json). After deployment, all **21 hosted release checks passed**, including real Vertex inference, workspace isolation, swap/replay, audit export verification, new project creation, recovery/session invalidation, and account cleanup; see [RELEASE_EVIDENCE.json](RELEASE_EVIDENCE.json). The browser workflow evidence is local Safari, not a final hosted browser/mobile pass: the native browser automation interface became unavailable. The four component tests and hosted API checks do not replace a final visual check.
+
+The reproducible release command is `node scripts/live-smoke.mjs https://pactshift-wh46bdeima-uc.a.run.app`. It creates temporary fixtures and deletes them, attempts one configured AI analysis, and rewrites the evidence JSON. It performs real cloud operations, so run it deliberately rather than as a frequent uptime probe. The audit CLI also accepts either a workspace export or the audit export: `node scripts/verify-audit.mjs path/to/export.json`.
+
+For each new release, use a disposable demo or explicitly designated test account:
+
+- Load the home page in a logged-out browser and create a new demo.
+- Register a separate test owner, save the recovery code, and create a project from the form. This catches field-mapping problems that API-only tests miss.
+- Capture a request, review its engine label/evidence, choose a valid swap, share, and accept in a second browser context.
+- Confirm the owner sees the new version and that the previous baseline retains its original budget and date.
+- Refresh/reopen and verify the saved state. Test a conflicting or stale offer and same-choice replay without duplicating scope.
+- Verify client output excludes internal costs and unrelated data. Download/print the receipt and inspect it.
+- Exercise account recovery and a test workspace deletion; do not delete real customer work as a smoke test.
+- Confirm mobile-width layout, keyboard navigation, empty/error states, and meaningful labels.
+
+Do not repeatedly create demos to check uptime: the global demo limit exists to control storage and abuse. Use the minimal health endpoint for routine readiness, remembering that it still performs a Firestore read.
+
+## Data retention and limits
+
+Enable TTL on top-level `expiresAt` for the `pactshift` collection group, and disable indexing on the large `value` field because the application uses direct-key reads rather than queries. TTL cleanup is asynchronous; session, demo, and offer authorization checks enforce expiry independently.
+
+Real sessions and offer links expire after seven days. Demo users/workspaces expire after 24 hours; demo links cannot outlive that window. Rate counters and replay markers also have finite expiry. Provider logs have separate retention and can contain IP addresses and request paths, including sensitive offer URLs.
+
+Workspace deletion removes active application records and invalidates links. Provider logs and PITR versions may remain until their retention windows expire. Do not promise immediate erasure from every recovery mechanism. PITR's seven-day window is a provider capability, not proof that the app has a tested one-click restore. [Firestore PITR](https://docs.cloud.google.com/firestore/native/docs/use-pitr)
+
+The application caps a workspace at 720,000 serialized bytes. It stores at most 3/15/60 projects by plan, including archived projects, and at most 30 requests, 80 deliverables, 50 snapshots, and 100 audit events per project. If a limit is reached, export the record and arrange a deliberate migration or new workspace; there is no supported JSON import or selective project deletion UI. Never remove history by hand to make a demo appear healthy.
+
+## Monitoring and cost control
+
+Cloud Run logs include request-level provider data; unexpected application errors emit a request ID and a sanitized response to the browser. Avoid logging bodies, cookies, authorization headers, or offer tokens. Access to provider logs should be restricted because paths can disclose capability links.
+
+Monitor request error rate, latency, instance/memory usage, Firestore transaction failures, and actual cloud spend. Inspect how often analysis falls back to rules before advertising AI availability. Budgets and alerts should be scoped so this application is distinguishable from unrelated services in the shared project. A two-instance cap controls capacity but does not guarantee a fixed bill.
+
+Minimum zero can introduce a cold start. Two instances and a single region are a cost-conscious initial configuration, not a high-availability architecture. Concurrency 40 is a configuration value, not a measured safe throughput claim. Increase resources only after measuring the workload and workspace transaction contention.
+
+## Incident response
+
+**App unavailable:** inspect service health, revision changes, database permissions, quotas, and logs. If a new image is responsible, route traffic back to a known-good revision after confirming data compatibility. A code rollback does not undo database changes.
+
+**AI unavailable or expensive:** disable `AI_PROVIDER` or reduce the daily attempt cap. The rules workflow and existing offer acceptance remain available. Record the capability change and validate the interface's engine label.
+
+**Wrong or exposed client link:** revoke that offer from the owner's request view, review the current baseline, then issue a new link. An already accepted choice needs an explicit new commercial correction; do not silently rewrite its receipt.
+
+**Suspected account compromise:** use verified account recovery to rotate the password/recovery code and invalidate sessions. Inspect relevant events and revoke exposed proposals. Do not accept an unverified public message as authority to change someone else's account.
+
+**Data corruption:** stop writes to affected data, identify the last trustworthy timestamp, and use a separate recovery target for PITR/export investigation. Compare owner, baseline, request, and audit consistency before reconnecting the service. Keep a recovery record. The exact restore action should follow the provider's current procedure and the specific incident; do not overwrite the live database blindly.
+
+## Optional payment activation
+
+Paid plans remain locked until all four Stripe variables are set. Configure recurring prices matching the published plans, supply secrets through the deployment's secret mechanism, and register `/api/billing/webhook` for subscription created/updated/deleted events. The webhook uses raw-body signature verification, matching saved customer references, replay markers, and event-ordering protection.
+
+Before enabling real purchase buttons, verify test-mode checkout, entitlement change after the webhook, portal access, cancellation, delayed event handling, and account deletion behavior. The application does not collect an agency's client-project fees. Do not infer payment from `?checkout=success`; only verified provider state grants a paid plan.
+
+Merchant eligibility and provider charges are account-dependent. This repository supplies the integration; it does not claim that a merchant account is activated or that any real payment has occurred.
