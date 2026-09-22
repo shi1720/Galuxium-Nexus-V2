@@ -14,5 +14,6 @@ hack47/
 scripts/video/assets/
 scripts/video/.build/
 deliverables/*.mp4
+deliverables/*.zip
 .firebase/
 firebase-debug.log

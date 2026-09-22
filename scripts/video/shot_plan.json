@@ -1,0 +1,328 @@
+{
+  "01-opening": [
+    {
+      "kind": "title",
+      "title": "Pactshift",
+      "subtitle": "Scope changes your clients can approve",
+      "seconds": 4
+    },
+    {
+      "kind": "image",
+      "path": "scripts/video/assets/landing.png",
+      "heading": "When a client asks for one more thing",
+      "seconds": 7,
+      "crop": [
+        280,
+        0,
+        1630,
+        1000
+      ],
+      "sample": false
+    },
+    {
+      "kind": "image",
+      "path": "scripts/video/assets/landing.png",
+      "heading": "Give the conversation a clear outcome",
+      "seconds": "remaining",
+      "crop": [
+        330,
+        180,
+        1580,
+        820
+      ],
+      "sample": false
+    }
+  ],
+  "02-baseline": [
+    {
+      "kind": "image",
+      "path": "scripts/video/assets/baseline.png",
+      "heading": "The original agreement",
+      "seconds": 13.7,
+      "crop": [
+        330,
+        140,
+        1820,
+        1080
+      ],
+      "sample": true
+    },
+    {
+      "kind": "image",
+      "path": "scripts/video/assets/request.png",
+      "heading": "A new request arrives",
+      "seconds": "remaining",
+      "crop": [
+        365,
+        180,
+        1400,
+        555
+      ],
+      "sample": true
+    }
+  ],
+  "03-analysis": [
+    {
+      "kind": "image",
+      "path": "scripts/video/assets/request.png",
+      "heading": "Review the request against saved scope",
+      "seconds": 6,
+      "crop": [
+        365,
+        300,
+        1790,
+        1080
+      ],
+      "sample": true
+    },
+    {
+      "kind": "image",
+      "path": "scripts/video/assets/swap.png",
+      "heading": "Evidence and the disclosed analysis engine",
+      "seconds": 7.3,
+      "crop": [
+        375,
+        20,
+        1390,
+        465
+      ],
+      "sample": true
+    },
+    {
+      "kind": "image",
+      "path": "scripts/video/assets/request.png",
+      "heading": "The owner confirms effort and the fee",
+      "seconds": "remaining",
+      "crop": [
+        1400,
+        325,
+        1790,
+        815
+      ],
+      "sample": true
+    }
+  ],
+  "04-swap": [
+    {
+      "kind": "image",
+      "path": "scripts/video/assets/swap.png",
+      "heading": "The proposed exchange",
+      "seconds": 7,
+      "crop": [
+        340,
+        0,
+        1800,
+        1070
+      ],
+      "sample": true
+    },
+    {
+      "kind": "image",
+      "path": "scripts/video/assets/swap.png",
+      "heading": "Only eligible work can be exchanged",
+      "seconds": "remaining",
+      "crop": [
+        375,
+        475,
+        1390,
+        1065
+      ],
+      "sample": true
+    }
+  ],
+  "05-offer": [
+    {
+      "kind": "image",
+      "path": "scripts/video/assets/offer.png",
+      "heading": "A client view with no account required",
+      "seconds": 5,
+      "crop": [
+        550,
+        160,
+        1370,
+        655
+      ],
+      "sample": true
+    },
+    {
+      "kind": "image",
+      "path": "scripts/video/assets/offer-options.png",
+      "heading": "The client sees the choices and assumptions",
+      "seconds": "remaining",
+      "crop": [
+        430,
+        0,
+        1490,
+        790
+      ],
+      "sample": true
+    }
+  ],
+  "06-decision": [
+    {
+      "kind": "image",
+      "path": "scripts/video/assets/decision-03.jpg",
+      "heading": "The client records the decision",
+      "seconds": 4.2,
+      "crop": [
+        420,
+        585,
+        1500,
+        1010
+      ],
+      "sample": true
+    },
+    {
+      "kind": "video",
+      "path": "scripts/video/.build/decision-capture.mp4",
+      "heading": "The client confirms the exchange",
+      "seconds": 1.1,
+      "sample": true
+    },
+    {
+      "kind": "image",
+      "path": "scripts/video/assets/accepted.png",
+      "heading": "A receipt records the accepted exchange",
+      "seconds": "remaining",
+      "crop": [
+        600,
+        300,
+        1320,
+        890
+      ],
+      "sample": true
+    }
+  ],
+  "07-result": [
+    {
+      "kind": "image",
+      "path": "scripts/video/assets/result.png",
+      "heading": "The agreement has changed",
+      "seconds": 5,
+      "crop": [
+        340,
+        170,
+        1800,
+        1060
+      ],
+      "sample": true
+    },
+    {
+      "kind": "image",
+      "path": "scripts/video/assets/result-detail.png",
+      "heading": "The planned work reflects the decision",
+      "seconds": 7,
+      "crop": [
+        375,
+        520,
+        1775,
+        833
+      ],
+      "sample": true
+    },
+    {
+      "kind": "image",
+      "path": "scripts/video/assets/result.png",
+      "heading": "Same budget and date, a new baseline",
+      "seconds": "remaining",
+      "crop": [
+        365,
+        180,
+        1790,
+        500
+      ],
+      "sample": true
+    }
+  ],
+  "08-history": [
+    {
+      "kind": "image",
+      "path": "scripts/video/assets/history.png",
+      "heading": "Previous baselines remain available",
+      "seconds": 8,
+      "crop": [
+        365,
+        315,
+        1790,
+        800
+      ],
+      "sample": true
+    },
+    {
+      "kind": "image",
+      "path": "scripts/video/assets/audit.png",
+      "heading": "A linked, exportable decision record",
+      "seconds": 11,
+      "crop": [
+        365,
+        145,
+        1790,
+        790
+      ],
+      "sample": true
+    },
+    {
+      "kind": "image",
+      "path": "scripts/video/assets/accepted.png",
+      "heading": "A recorded acknowledgement has clear limits",
+      "seconds": "remaining",
+      "crop": [
+        615,
+        710,
+        1300,
+        977
+      ],
+      "sample": true
+    }
+  ],
+  "09-pricing": [
+    {
+      "kind": "image",
+      "path": "scripts/video/assets/pricing.png",
+      "heading": "Proposed subscription plans",
+      "seconds": 6,
+      "crop": [
+        340,
+        145,
+        1800,
+        980
+      ],
+      "sample": false
+    },
+    {
+      "kind": "image",
+      "path": "scripts/video/assets/pricing.png",
+      "heading": "Clear allowances, no percentage fee",
+      "seconds": "remaining",
+      "crop": [
+        365,
+        410,
+        1790,
+        980
+      ],
+      "sample": false
+    }
+  ],
+  "10-close": [
+    {
+      "kind": "image",
+      "path": "scripts/video/assets/result.png",
+      "heading": "Ready for real customer validation",
+      "seconds": "remaining",
+      "crop": [
+        365,
+        180,
+        1790,
+        500
+      ],
+      "sample": true
+    },
+    {
+      "kind": "title",
+      "title": "Pactshift",
+      "subtitle": "When the request changes, the agreement should too.",
+      "seconds": 6,
+      "show_url": true
+    }
+  ]
+}

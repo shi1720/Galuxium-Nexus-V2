@@ -1,5 +1,5 @@
 {
-  "liveUrl": "https://pactshift-wh46bdeima-uc.a.run.app",
+  "liveUrl": "https://pactshift.web.app",
   "screenshot": "scripts/artifacts/request-detail.png",
   "screenshotSource": "docs/images/request.png",
   "screenshotCropPixels": [240, 230, 1157, 687],

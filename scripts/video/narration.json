@@ -1,0 +1,77 @@
+{
+  "voice_disclosure": "AI narration",
+  "author": "Shivam Gupta",
+  "live_url": "https://pactshift.web.app",
+  "segments": [
+    {
+      "id": "01-opening",
+      "shot_id": "01-opening",
+      "index": 1,
+      "text": "Pactshift was built by Shivam Gupta. An agency agrees to build a website. Halfway through, the client asks for one more thing. The request changes, but the budget and delivery plan often don't. Pactshift turns that conversation into a choice everyone can see, and an agreement the project actually follows.",
+      "audio": "scripts/video/assets/voice/01.wav"
+    },
+    {
+      "id": "02-baseline",
+      "shot_id": "02-baseline",
+      "index": 2,
+      "text": "Let's take a real workflow using fictional sample data. Northstar Studio is building this website for Forma Architecture. The fixed budget is twelve thousand dollars. The agreed work totals ninety-six estimated hours. Now the client wants Spanish-language pages, estimated at twelve hours, with the translated copy supplied by the client.",
+      "audio": "scripts/video/assets/voice/02.wav"
+    },
+    {
+      "id": "03-analysis",
+      "shot_id": "03-analysis",
+      "index": 3,
+      "text": "The request sits beside the saved scope. The analysis helps the owner review what is changing, and the interface shows which engine produced it. AI can assist here, but it does not decide what the client owes. The owner confirms the effort. The server calculates the fee from the project's rate: twelve hours at one hundred and twenty-five dollars is fifteen hundred dollars.",
+      "audio": "scripts/video/assets/voice/03.wav"
+    },
+    {
+      "id": "04-swap",
+      "shot_id": "04-swap",
+      "index": 4,
+      "text": "Charging more is one option. But the client may care more about the launch date and a fixed budget. So the agency can offer an exchange. This resource library is planned for sixteen hours and hasn't started. We can replace it with the twelve-hour language addition. Work already underway, locked deliverables, and dependencies constrain what can be offered.",
+      "audio": "scripts/video/assets/voice/04.wav"
+    },
+    {
+      "id": "05-offer",
+      "shot_id": "05-offer",
+      "index": 5,
+      "text": "The agency shares the proposal and opens the client view. The client doesn't need to create an account. They can see the addition with its fee and schedule impact, the exact deliverable exchange, or the option to defer. They also see the assumptions. There is no surprise invoice hiding behind an approval button.",
+      "audio": "scripts/video/assets/voice/05.wav"
+    },
+    {
+      "id": "06-decision",
+      "shot_id": "06-decision",
+      "index": 6,
+      "text": "In this demonstration, the fictional client chooses the exchange. They enter a name, acknowledge the terms, and confirm the choice.",
+      "audio": "scripts/video/assets/voice/06.wav"
+    },
+    {
+      "id": "07-result",
+      "shot_id": "07-result",
+      "index": 7,
+      "text": "Back in the agency workspace, this is the important part: the agreement changed. The resource library has been exchanged for the Spanish-language pages. The budget is still twelve thousand dollars. The delivery date is unchanged. Total estimated work moves from ninety-six to ninety-two hours, and the new baseline records the decision.",
+      "audio": "scripts/video/assets/voice/07.wav"
+    },
+    {
+      "id": "08-history",
+      "shot_id": "08-history",
+      "index": 8,
+      "text": "That is four hours of planned capacity preserved, not four hours of revenue. The system also keeps previous baselines and a linked decision history. Version checks protect against stale approvals, and repeated acceptance cannot duplicate the new work. The owner can export the workspace record. The client acknowledgement records a decision; it does not independently verify the signer's identity.",
+      "audio": "scripts/video/assets/voice/08.wav"
+    },
+    {
+      "id": "09-pricing",
+      "shot_id": "09-pricing",
+      "index": 9,
+      "text": "Pactshift is built for small agencies that need this conversation handled clearly. The proposed subscriptions start with a free plan, then twenty-nine dollars for Studio and seventy-nine dollars for Agency, with defined stored-project and analysis allowances. Client review has no seat charge, and Pactshift takes no cut of an agency's approved work.",
+      "audio": "scripts/video/assets/voice/09.wav"
+    },
+    {
+      "id": "10-close",
+      "shot_id": "10-close",
+      "index": 10,
+      "text": "This is a pre-validation product, with no claimed customers or revenue. Shivam developed Pactshift with substantial AI assistance, and the next step is testing this workflow with real agency owners and their clients. The goal is simple: when the request changes, help both sides agree on what changes with it.",
+      "audio": "scripts/video/assets/voice/10.wav"
+    }
+  ]
+}

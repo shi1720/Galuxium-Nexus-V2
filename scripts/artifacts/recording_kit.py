@@ -15,7 +15,7 @@ cues = [
     ['Review the request', 'Show the analysis engine, confirmed 12 hours, $1,500 fee and supplied-copy assumption.'],
     ['A scope exchange', 'Show the eligible 16-hour Resource library and the constraints on other work. Save the draft.'],
     ['The client view', 'Share the proposal and open its real client offer in another tab. Show all three options.'],
-    ['The client decision', 'Act as fictional client Alex Morgan. Acknowledge the terms, choose the exchange, and wait.'],
+    ['The client decision', 'Act as fictional client Jamie, sample client. Acknowledge the terms, choose the exchange, and wait.'],
     ['The updated agreement', 'Return to the owner view. Show version two, $12,000, 92 estimated hours and the replaced deliverable.'],
     ['The record', 'Show previous baselines, decision history and the workspace export control.'],
     ['The business', 'Show the proposed Free, Studio $29 and Agency $79 plans with their stored-project allowances.'],

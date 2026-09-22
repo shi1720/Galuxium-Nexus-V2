@@ -1,0 +1,46 @@
+{
+  "application": "https://pactshift.web.app",
+  "verifiedOn": "2026-09-22",
+  "browser": "Codex in-app Chromium browser",
+  "viewports": [
+    {
+      "width": 1920,
+      "height": 1080,
+      "coverage": "Landing, workspace, project, review, public client choice, accepted receipt, updated scope, version history, audit, pricing"
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "coverage": "Navigation keyboard/accessibility, project creation, real Vertex request analysis, publish, client deferral, receipt, revisit, invalid and valid owner login, session refresh, authenticated export"
+    },
+    {
+      "width": 768,
+      "height": 1024,
+      "coverage": "Dashboard and project creation dialog layout"
+    }
+  ],
+  "results": [
+    "Desktop sample exchange committed baseline version 2, reduced scope from 96 to 92 hours and preserved budget and date",
+    "Mobile request received real Vertex analysis with scope citations",
+    "Mobile client deferral preserved the existing agreement and owner revisit created a distinct draft",
+    "Invalid password produced a clear error; correct password opened only the synthetic owner workspace",
+    "Refresh preserved the authenticated session",
+    "Workspace export triggered a browser download",
+    "Closed mobile navigation was removed from focus and accessibility tree; Escape closed navigation and restored button focus",
+    "No horizontal page overflow in checked mobile and tablet views",
+    "No captured console warnings or errors in checked owner flows"
+  ],
+  "fixtureCleanup": "Disposable browser login account and workspace deleted successfully via authenticated API",
+  "video": {
+    "url": "https://youtu.be/BF9QX1_Pppg",
+    "public": "YouTube Studio Public setting and Video published confirmation",
+    "playback": "Player time advanced with no media error; 1920 x 1080 and 201.241 seconds",
+    "captions": "Settings displayed Subtitles/CC English",
+    "embedding": "Unauthenticated YouTube oEmbed returned HTTP 200 and the correct video title and embed URL"
+  },
+  "limits": [
+    "Responsive Chromium checks, not an exhaustive browser or assistive technology certification",
+    "Recorded application scenarios use fictional sample data",
+    "Public video uses disclosed AI narration and edited application captures"
+  ]
+}

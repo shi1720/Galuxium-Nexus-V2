@@ -1,0 +1,65 @@
+{
+  "project": "Pactshift",
+  "prepared_on": "2026-09-22",
+  "title": "Pactshift: When a Client Asks for One More Thing | Galuxium Nexus V2",
+  "public_watch_url": "https://youtu.be/BF9QX1_Pppg",
+  "live_application": "https://pactshift.web.app",
+  "publication": {
+    "status": "Public",
+    "evidence": "YouTube Studio showed Video published confirmation after Public was selected in the authorized browser session.",
+    "published_on": "2026-09-22",
+    "custom_thumbnail": true,
+    "caption_track": "English, manually supplied 63-cue SRT",
+    "ai_use_disclosed": true,
+    "platform_checks": "YouTube copyright and community checks reported no issues."
+  },
+  "video": {
+    "path": "deliverables/Pactshift-demo.mp4",
+    "sha256": "f0379d0d6ca7239a56d7f3fb0246842ec407e043972767692c66cc023a2256b8",
+    "bytes": 8729608,
+    "duration_seconds": 201.20575,
+    "width": 1920,
+    "height": 1080,
+    "frames_per_second": 30,
+    "video_codec": "H.264",
+    "audio_codec": "AAC",
+    "audio_sample_rate_hz": 48000,
+    "audio_channels": 1,
+    "integrated_loudness_lufs": -16.11,
+    "true_peak_dbtp": -1.49
+  },
+  "captions": {
+    "path": "deliverables/Pactshift-demo.srt",
+    "sha256": "41ef84685adf00c4c7a0203d2cee0e4d18de1f1bb966bd8be5866f92f2513508",
+    "cues": 63,
+    "exact_script_words": 506,
+    "timing": "Recognized word timestamps aligned to the exact narration.",
+    "burned_into_video": true,
+    "encoded_cues_checked": 63,
+    "minimum_encoded_text_mask_overlap": 0.987
+  },
+  "visuals": {
+    "shots": 25,
+    "source": "Authentic captures of the hosted application using fictional demonstration data.",
+    "format": "Edited narrated walkthrough with still overview and detail views.",
+    "recorded_confirmation_sequence_seconds": 1.1,
+    "confirmation_source": "Four timestamped browser screencast frames, played at recorded speed.",
+    "encoded_review": "All 25 encoded shot samples inspected using seven contact sheets. Confirmation and subsequent subtitles verified.",
+    "color_check": "Every encoded shot retained the expected forest header color.",
+    "black_intervals_detected": 0,
+    "silence_intervals_over_1_5_seconds_detected": 0
+  },
+  "disclosures": {
+    "narration": "AI-generated narration, disclosed on opening and closing cards and in the public description.",
+    "builder": "Shivam Gupta, with substantial AI assistance.",
+    "sample": "The project, client identity and commercial amounts are fictional demonstration data.",
+    "traction": "No verified customer or revenue claims."
+  },
+  "submission_package": {
+    "path": "deliverables/Pactshift-submission.zip",
+    "sha256": "b1df47f6b0da7c9f42f11d28b34d38de644d7b478e78647717974345dfd62c1f",
+    "bytes": 8646835,
+    "entries": 9,
+    "checks": "ZIP integrity and unpacking; all payload hashes; safe paths; relative Markdown links; five PDF pages; seven PPTX slides; strict file allowlist; common credential-pattern scan."
+  }
+}

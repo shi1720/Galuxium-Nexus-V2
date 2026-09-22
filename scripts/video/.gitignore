@@ -1,0 +1,4 @@
+.build/
+assets/
+*.local.json
+__pycache__/

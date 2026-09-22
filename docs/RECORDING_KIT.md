@@ -1,11 +1,14 @@
 # Pactshift recording kit
 
-This kit prepares the recording. **Shivam still needs to record the real application and his voice, edit the take, and upload a playable video.** Neither the teleprompter nor the captions file is a finished video.
+These optional tools support rehearsal, edits, or a personal voice retake. The current production uses explicitly disclosed AI narration with authentic application captures; see [the video plan](VIDEO_PLAN.md). Neither this teleprompter nor its draft captions alone is a finished video.
 
+- [Watch the public product video](https://youtu.be/BF9QX1_Pppg)
+- [Download the finished 3:21 product video](../deliverables/Pactshift-demo.mp4)
+- [Aligned final captions](../deliverables/Pactshift-demo.srt)
 - [Exact narration and full storyboard](DEMO_SCRIPT.md)
 - [Open the self-contained teleprompter](../deliverables/Pactshift-teleprompter.html)
 - [Download the estimated caption timing draft](../deliverables/Pactshift-captions-draft.srt)
-- [Live application](https://pactshift-wh46bdeima-uc.a.run.app)
+- [Live application](https://pactshift.web.app)
 
 ## A straightforward recording setup
 
@@ -13,7 +16,7 @@ Open the HTML file locally in a browser. It needs no server, account, network ac
 
 Start with a fresh isolated demo workspace. The sample agency, project and client identity are fictional. Keep the owner view and the generated client offer in separate tabs. Record at 1920 x 1080 or higher with system notifications and unrelated windows hidden. Capture the actual application, including the decision and saved result. Do not substitute the pitch deck for the required product workflow.
 
-At the default 135 words per minute, the 510-word narration takes about 3 minutes 47 seconds before action pauses. Leave time for the client decision, loading, and the owner refresh. A finished take around four minutes should fit the event's 2-5 minute requirement. Actual pace determines the duration.
+At the default 135 words per minute, the 506-word narration takes about 3 minutes 45 seconds before action pauses. Leave time for the client decision, loading, and the owner refresh. A finished take around four minutes should fit the event's 2-5 minute requirement. Actual pace determines the duration.
 
 ## Teleprompter controls
 
@@ -41,7 +44,7 @@ The progress display measures words in the script. Its remaining time assumes co
 3. Review the analysis engine, the 12-hour effort, supplied-copy assumption and $1,500 fee.
 4. Show the 16-hour Resource library exchange and the restrictions on other work. Save the draft.
 5. Share the proposal and open the actual client view.
-6. As fictional client Alex Morgan, acknowledge the terms and accept the exchange. Keep the action and response visible.
+6. As fictional client Jamie, sample client, acknowledge the terms and accept the exchange. Keep the action and response visible.
 7. Return to the owner view. Show version two, unchanged $12,000 budget and date, and 92 estimated hours.
 8. Show the decision history, previous baselines and workspace export.
 9. Show the proposed pricing and stored-project allowances.
@@ -51,7 +54,7 @@ The script deliberately avoids an exact due date because each demo uses a date r
 
 ## Caption timing draft
 
-`Pactshift-captions-draft.srt` contains the exact spoken words from the verbatim narration, with short readable caption lines. The generator distributes them across a four-minute planning timeline, from 00:01 to 03:59, including estimated gaps. **These timestamps are estimates, not alignment to recorded audio.** No recorded speech was available when they were generated.
+`Pactshift-captions-draft.srt` contains the exact spoken words from the verbatim narration, with short readable caption lines. The generator distributes them across a four-minute planning timeline, from 00:01 to 03:59, including estimated gaps. **These timestamps are estimates, not alignment to recorded audio.** This rehearsal draft was created before the voice recording. The finished video uses the separate word-aligned `Pactshift-demo.srt` track.
 
 After editing the real take, import the SRT into the video editor or the upload platform. Align every cue to the actual speech, extend gaps for actions, and check that captions never reveal a decision before the viewer hears it. Preview the complete exported video with sound and captions. Keep the wording exact unless Shivam intentionally changes the spoken script, then update the source and captions together.
 
