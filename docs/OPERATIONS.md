@@ -129,6 +129,7 @@ Latest evidence supplied for this documentation on 22 September 2026:
 | Desktop browser journey | Hosted application at 1920px: share, client swap, receipt, and owner update verified; $12,000 budget/date unchanged; 96h becomes 92h. No desktop errors observed. |
 | Mobile browser journey | At 390px: create project, execute Vertex analysis with a source quote, share, defer, receive receipt, and revisit as a fresh draft. Original deferral preserved. No horizontal overflow in visited views. |
 | Existing-owner mobile login | Passed: invalid password shows an error; correct login opens the empty private workspace; refresh retains the session; no horizontal overflow at 390px. |
+| Tablet and export checks | At 768×1024, dashboard and create-project modal each had page width 768 with no overflow. Authenticated mobile workspace export triggered a download; console error/warning logs were empty. QA fixture cleanup returned HTTP 200. |
 | Mobile navigation accessibility | Closed navigation was verified absent from the accessibility tree after the deployed menu fix. This is a targeted check, not a comprehensive accessibility audit. |
 | Stripe | Unconfigured; no checkout completion or live charge claimed. |
 | Restore drill | PITR configured; a full recovery exercise has not been claimed. |

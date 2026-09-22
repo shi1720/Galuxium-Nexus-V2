@@ -4,7 +4,7 @@ Published **22 September 2026**: [Pactshift product demo](https://youtu.be/BF9QX
 
 The final film runs **3:21.20575**, at 1920×1080, with 506 narration words and 63 aligned captions. It is an edited walkthrough using 25 authentic hosted capture views, including a 1.1-second browser confirmation sequence at recorded speed. Narration is disclosed AI audio. It should not be described as an uncut full-length screen recording.
 
-Public playback advanced to **7.17 seconds** with duration **201.241 seconds**, readyState 4, 1920×1080 video, and no media error. Unauthenticated YouTube oEmbed returned HTTP 200 with the matching title, author, and embed. Source MP4 duration and hosted-player duration are recorded separately.
+Public playback advanced to **7.17 seconds** with duration **201.241 seconds**, readyState 4, 1920×1080 video, and no media error. Unauthenticated YouTube oEmbed returned HTTP 200 with the matching title, author, and embed. The player settings showed English subtitles and Auto 1080p HD quality after playback; playback was then paused. Source MP4 duration and hosted-player duration are recorded separately.
 
 ## YouTube title
 
