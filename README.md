@@ -4,7 +4,7 @@
 
 Pactshift helps small web and design agencies handle a change request before it quietly changes the project. A client can add budget, exchange planned deliverables, or defer. Acceptance updates the saved agreement, including its scope, budget, and delivery date.
 
-**[Open the live application](https://pactshift-wh46bdeima-uc.a.run.app)** · **[Executive brief](deliverables/Pactshift-brief.pdf)** · **[Pitch deck](deliverables/Pactshift-pitch.pptx)** · **[Demo script](docs/DEMO_SCRIPT.md)**
+**[Open Pactshift](https://pactshift.web.app)** · **[Watch the 3:21 demo](https://youtu.be/BF9QX1_Pppg)** · **[Executive brief](deliverables/Pactshift-brief.pdf)** · **[Pitch deck](deliverables/Pactshift-pitch.pptx)**
 
 **[Start here: Shivam’s handoff guide](START_HERE.md)**
 
@@ -34,14 +34,14 @@ This is an **early production release with explicit limits**, not an enterprise 
 
 | Item | State |
 | --- | --- |
-| Public deployment | Cloud Run revision `pactshift-00003-k8c`; 21 hosted release checks passed. [Evidence](docs/RELEASE_EVIDENCE.json) / [deployment](docs/DEPLOYMENT.json). |
+| Public deployment | `https://pactshift.web.app` is live. Firebase Hosting serves the interface and forwards `/api/**` to Cloud Run. All 21 canonical-origin release checks passed. [Hosted evidence](docs/RELEASE_EVIDENCE.json). |
 | Durable storage | Named Firestore database; deployed demo returned Firestore capability. Native adapter smoke covered serialization, concurrent updates, and rollback. |
-| Automated checks | 30 focused tests passed: 26 backend and 4 frontend. Clean-install [GitHub CI passed](https://github.com/shi1720/Galuxium-Nexus-V2/actions/runs/35687887776), including build and zero-vulnerability dependency audit. |
-| AI | Final hosted smoke executed `vertex` / `gemini-2.5-flash-lite`; citation count is recorded in the release evidence. Each analysis identifies the actual engine used. |
-| Browser workflow | Local Safari: publish proposal → client accepts swap → $12,000 / October 20 / version two receipt → updated owner project verified. Hosted Cloud Run workflow was verified separately through the real API; a final hosted browser/mobile check is not claimed. |
+| Automated checks | 46 tests passed; production build passed; dependency audit reported zero vulnerabilities. The previous release also passed clean-install [GitHub CI](https://github.com/shi1720/Galuxium-Nexus-V2/actions/runs/35687887776). |
+| AI | Canonical hosted smoke executed `vertex` / `gemini-2.5-flash-lite` with two validated citations. Actual Vertex analysis was also verified in the mobile browser journey. |
+| Browser workflow | Hosted desktop at 1920px: accepted swap preserved budget/date and changed 96h to 92h. At 390px: project creation, Vertex analysis, share, defer, receipt, and revisit as a new draft passed. Existing-owner mobile login rejected an invalid password, accepted correct credentials, and retained the session on refresh. No horizontal overflow in visited mobile views; no desktop errors observed. Closed mobile navigation was verified absent from the accessibility tree after its fix. |
 | Payments | Intentionally disabled until merchant configuration is supplied. Paid plans are proposed; no live charge is claimed. |
 | Traction | Zero verified customers and $0 verified revenue. |
-| Demo video | Narration and storyboard prepared; finished video is still required for submission. |
+| Demo video | [Public 3:21 video](https://youtu.be/BF9QX1_Pppg), with disclosed AI narration and 63 captions. Publication and public watch-page playback verified; unauthenticated oEmbed returned the matching video metadata. [Video evidence](docs/VIDEO_EVIDENCE.json). |
 
 ## What works
 
@@ -52,7 +52,9 @@ This is an **early production release with explicit limits**, not an enterprise 
 - Human review of estimates and options before sharing; all fees calculated on the server.
 - Expiring, revocable client links with no client signup requirement.
 - Atomic add/swap/defer decisions, stale-baseline rejection, and repeat-acceptance protection.
-- Historical scope, budget, and delivery dates; linked audit events; private workspace and public decision exports.
+- Revisit a deferred request as a new draft against current scope while preserving the original decision.
+- Historical scope, budget, and calendar dates; export the selected agreement version; linked audit events and decision receipts.
+- Usage counts stored projects, including archives, consistently with plan allowances.
 - Archive/restore, workspace rename, and account/workspace deletion.
 - Optional Stripe subscription checkout, customer portal, signed webhook validation, and entitlement updates.
 
@@ -100,7 +102,8 @@ A separate native Firestore smoke verified nested data roundtrip, hash consisten
 flowchart LR
     O[Agency owner] --> UI[React interface]
     C[Client with offer link] --> UI
-    UI --> API[Express API on Cloud Run]
+    UI --> Hosting[Firebase Hosting]
+    Hosting -->|Same-origin /api requests| API[Express API on Cloud Run]
     API --> Domain[Deterministic agreement rules]
     Domain --> Store[Transactional store]
     Store --> FS[Firestore production]
@@ -113,14 +116,15 @@ flowchart LR
 | Layer | Technology / decision |
 | --- | --- |
 | Interface | React 19, React Router, Vite, TypeScript, Lucide icons, locally hosted fonts. |
+| Hosting | Firebase Hosting site `pactshift`: static SPA and same-origin Cloud Run API rewrite. |
 | API | Node.js 22, Express 5, Zod validation, Helmet, cookie sessions. |
 | Domain | Server-owned integer currency arithmetic and explicit workflow transitions. |
 | Persistence | Firestore native transactions; serialized atomic-file adapter for one local process. |
 | Analysis | Optional Vertex Gemini 2.5 Flash-Lite; exact-substring citations; 12-second fallback boundary. |
-| Authentication | bcrypt password hashes, hashed random session/recovery tokens, CSRF and exact-origin checks. |
+| Authentication | bcrypt password hashes; hashed session/recovery tokens; host-only Secure/HttpOnly/SameSite `__session` production cookie; CSRF and exact-origin checks. |
 | Billing | Optional Stripe-hosted subscriptions and portal; signed, replay-safe webhook processing. |
 | Verification | Vitest, Supertest, TypeScript, explicit Firestore and browser smoke checks. |
-| Packaging | Multi-stage Docker build; non-root runtime; same-origin client/API deployment. |
+| Packaging | Multi-stage backend Docker build with non-root runtime; Vite static output deployed to Firebase Hosting. |
 
 The bounded workspace aggregate makes a scope change, baseline snapshot, and audit event one transaction. That simplifies correctness for small accounts, while creating an intentional storage and write-contention limit. Larger accounts would require a migration to separate project/event collections. [Architecture and schema](docs/ARCHITECTURE.md)
 
@@ -170,7 +174,7 @@ pactshift_offer=$(jq -r '.shareToken' "$pactshift_tmp/offer.json")
 curl --fail --silent --show-error \
   -H 'Origin: http://localhost:5173' \
   -H 'Content-Type: application/json' \
-  -d '{"choice":"swap","clientName":"Alex — sample client","acknowledged":true}' \
+  -d '{"choice":"swap","clientName":"Alex sample client","acknowledged":true}' \
   "http://localhost:8080/api/offers/$pactshift_offer/decide"
 ```
 
@@ -200,6 +204,7 @@ docs/                   Architecture, operations, business, submission
 scripts/artifacts/      Reproducible brief and presentation generators
 deliverables/           Executive PDF and editable pitch deck
 Dockerfile              Build and runtime image
+firebase.json           Hosting headers, static SPA, and Cloud Run API rewrite
 ```
 
 ## Security, operations, and contribution
@@ -208,4 +213,4 @@ Read [SECURITY.md](SECURITY.md) for the threat model and reporting procedure, [O
 
 This release has no MFA, email verification, independently verified signatures, advanced team roles, automatic contract-file extraction, email/Slack ingestion, or collection of agency client payments. PITR is configured for the named database, but a full operational restore exercise and sustained-load certification are not claimed. No SLA or compliance certification is offered.
 
-The [submission pack](docs/SUBMISSION.md) maps deliverables to the event rubric. The mandatory demo video still needs recording and a playable link before submission. Application code and documentation are provided under the [MIT License](LICENSE). Third-party libraries retain their own licenses; font license notices are included with the font assets.
+The [submission pack](docs/SUBMISSION.md) maps deliverables to the event rubric. The [judge testing guide](docs/TESTING_INSTRUCTIONS.md) gives the exact owner/client path. Backboard participant credits have been redeemed; Discord login/join and the final Devpost submission receipt remain unresolved participation steps. Application code and documentation are provided under the [MIT License](LICENSE). Third-party libraries retain their own licenses; font license notices are included with the font assets.

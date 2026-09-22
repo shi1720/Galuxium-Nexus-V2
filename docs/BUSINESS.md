@@ -1,4 +1,4 @@
-# Pactshift — business and monetization design
+# Pactshift: business and monetization design
 
 **22 September 2026 · Shivam Gupta, founder and product owner**
 

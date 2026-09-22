@@ -1,6 +1,6 @@
-# Galuxium Nexus V2 — submission and eligibility checklist
+# Galuxium Nexus V2: submission and eligibility checklist
 
-**Public-source check: 22 September 2026.** This is a preparation record, not confirmation of registration, eligibility, credit redemption, or submission. No participant account, Discord membership, or private announcements were inspected. Browser automation was unavailable during the final account check, so authorized account actions could not be completed or verified. No organizer messages were sent and no paid partner account was activated during this check.
+**Updated 22 September 2026.** The existing Devpost project 1192668 and signed-in edit access are verified. Backboard account signup, email verification, and redemption of **$10 in free participant credits** are complete. The product video is published publicly. Original roster timing remains unknown, Discord still requires the user's login and join action, and final Devpost submission has not been confirmed. No paid partner activation or Backboard application integration is claimed.
 
 ## Dates to use
 
@@ -10,10 +10,10 @@ The published submission window is **15 July 2026, 9:30 AM IST to 31 October 202
 
 | Action for Shivam | Evidence to retain | Current status |
 | --- | --- | --- |
-| [Sign in to Devpost](https://secure.devpost.com/users/login?ref=top-nav-login), open [the event](https://galuxium-nexus-v2-29411.devpost.com/), and confirm registration; create or open the Pactshift submission. | Event registration and project entry visible in the account. | Unverified. |
+| [Sign in to Devpost](https://secure.devpost.com/users/login?ref=top-nav-login), open [the event](https://galuxium-nexus-v2-29411.devpost.com/), and confirm registration; create or open the Pactshift submission. | Event registration and project entry visible in the account. | Existing project 1192668 and signed-in edit access verified 22 September; original registration date remains unknown. |
 | Confirm the participant roster and its registration timing. | Registration date; organizer clarification if the timing requirement is not met or is ambiguous. | Unverified; see the important rule below. |
-| Join the official Discord and review current announcements and resource instructions. | Membership and any final verification instructions completed. | Unverified. |
-| Complete the registered-participant Backboard credit redemption process. | Successful redemption/credit balance and any conditions shown in the account. | Unverified. |
+| Join the official Discord and review current announcements and resource instructions. | Membership and any final verification instructions completed. | User login required; no usable Discord credentials were available. Join through the [official invitation](https://discord.com/invite/J3Tbd3vXdr). |
+| Complete the registered-participant Backboard credit redemption process. | Successful redemption/credit balance and any conditions shown in the account. | Completed 22 September: account created, email verified, and $10 in free participant credits redeemed. |
 | Check any additional current identity, country, age, team, or submission conditions presented by Devpost and the organizer. | Requirements reviewed in the actual participant account. | Unverified. |
 
 The [official rules](https://galuxium-nexus-v2-29411.devpost.com/rules) expressly allow professionals and override the student-only/corporate-exclusion tags. They permit solo entry, require original work within the event window, and permit open-source dependencies and public APIs. They also require roster registration **before the build phase begins**. The rules say team size is capped but the reviewed text gives no number. Our registration timing is unknown: the extended deadline alone does not establish that a later registration is accepted. Retain authentic commit history and the accurate contribution statement in [SUBMISSION.md](SUBMISSION.md).
@@ -22,7 +22,9 @@ The [Q4 extension notice](https://galuxium-nexus-v2-29411.devpost.com/updates/45
 
 An [earlier communication notice](https://galuxium-nexus-v2-29411.devpost.com/updates/45543-action-required) also points participants to the organizer's LinkedIn and Instagram pages. Review current Discord instructions to resolve whether any additional verification is expected; the clearest explicit membership requirement in the reviewed notices is Discord.
 
-## Backboard redemption: precise next steps
+## Backboard redemption: completed
+
+The operator completed signup and email verification, then successfully redeemed $10 in free participant credits on 22 September 2026. No API key was needed, no paid plan was activated, and Pactshift continues to use Vertex AI for its application analysis.
 
 The [official Backboard update](https://galuxium-nexus-v2-29411.devpost.com/updates/45828-kindly-redeem-the-credits-on-mandatory-basis-to-be-eligible-for-judging) makes credit redemption a judging condition in its headline. Its instructions are:
 
@@ -31,7 +33,7 @@ The [official Backboard update](https://galuxium-nexus-v2-29411.devpost.com/upda
 3. Use its promo-code control and enter the uppercase code from the official update. This public repository deliberately does not reproduce the participant-restricted code.
 4. Check the resulting balance, expiry, plan requirements, and any charge before completing activation. Retain private confirmation without publishing billing details or credentials.
 
-The notice does **not** specify the redemption amount or explicitly require Backboard to be integrated into the submitted application. Do not claim either. Pactshift currently uses Vertex AI; redeeming a partner credit is separate from representing a technical integration. If the account imposes a paid plan or additional requirement, obtain a clear current explanation before treating it as a condition of entry.
+The notice itself does **not** specify the redemption amount or explicitly require Backboard to be integrated into the submitted application. The $10 above is the verified result for this participant account, not a universal offer promise. Redeeming a partner credit is separate from representing a technical integration.
 
 ## Prize discrepancy to resolve
 
@@ -46,11 +48,13 @@ These descriptions cannot establish a single reliable payout expectation. The we
 
 ## Final handoff
 
-- [ ] Resolve the unverified account/participation items above. Preserve any organizer clarification on roster timing and partner conditions.
-- [ ] Record the 2–5 minute product video using [the verbatim narration and storyboard](DEMO_SCRIPT.md). Upload it and test playback while signed out. The event makes the video mandatory; a script or pitch deck does not complete this requirement. [Submission requirements](https://galuxium-nexus-v2-29411.devpost.com/)
-- [ ] Open the [live app](https://pactshift-wh46bdeima-uc.a.run.app) and [public repository](https://github.com/shi1720/Galuxium-Nexus-V2) while signed out. Confirm the final release still completes a fresh demo and preserves the accepted decision.
-- [ ] Paste the reviewed [application copy](SUBMISSION.md), attach the final brief/deck where supported, and supply the live, repository, and playable video URLs.
+- [ ] Log in to Discord, join the official server, and resolve any remaining account requirements. Preserve any clarification on original roster timing.
+- [x] Redeem the Backboard participant credits. Signup, email verification, and $10 free-credit redemption completed.
+- [x] Produce and publish the [3:21 product video](https://youtu.be/BF9QX1_Pppg), with disclosed AI narration and 63 captions. [Video evidence](VIDEO_EVIDENCE.json).
+- [x] Complete the public watch-page playback and unauthenticated oEmbed checks. The event makes the video mandatory. [Submission requirements](https://galuxium-nexus-v2-29411.devpost.com/)
+- [x] Verify the [live app](https://pactshift.web.app) and [public repository](https://github.com/shi1720/Galuxium-Nexus-V2). Canonical hosted smoke and desktop/mobile product journeys passed.
+- [x] Save the reviewed [application copy](SUBMISSION.md), gallery, video, ZIP, and application/repository links. Four of five Devpost steps are saved; this is not final submission.
 - [ ] Confirm fictional demonstration data, proposed pricing, disabled paid checkout, and AI-assisted contribution wording remain accurate.
 - [ ] Submit before the deadline and retain the actual Devpost submission receipt/status. None has been recorded yet.
 
-The five-page [executive brief](../deliverables/Pactshift-brief.pdf) and seven-slide [editable pitch](../deliverables/Pactshift-pitch.pptx) have been generated and visually reviewed. Remaining eligibility and video steps require real account actions or human recording; they must not be marked complete from this document alone.
+The five-page [executive brief](../deliverables/Pactshift-brief.pdf), seven-slide [editable pitch](../deliverables/Pactshift-pitch.pptx), and 3:21 captioned video have been produced and reviewed. Remaining Discord and final-entry actions must be confirmed in the actual accounts.

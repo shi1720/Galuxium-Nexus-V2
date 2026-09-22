@@ -1,4 +1,4 @@
-# Pactshift — market thesis and source pack
+# Pactshift: market thesis and source pack
 
 Research date: **22 September 2026**. Founder and product owner: **Shivam Gupta**. This is desk research, not customer validation. There are **zero verified users, paying customers, or revenue** in this research record.
 
@@ -82,19 +82,19 @@ All sources accessed **22 September 2026**. This pack records the claims used ab
 
 | ID | Source | Supports / does not establish |
 | --- | --- | --- |
-| S1 | [Upwork — 14 Negotiation Helpers for Avoiding Scope Creep](https://www.upwork.com/mc/documents/caf2f4f2e8dab00fc04b3408465eedb3) | Recognizable swap/add/defer negotiation practice; not frequency or demand for Pactshift. |
+| S1 | [Upwork: 14 Negotiation Helpers for Avoiding Scope Creep](https://www.upwork.com/mc/documents/caf2f4f2e8dab00fc04b3408465eedb3) | Recognizable swap/add/defer negotiation practice; not frequency or demand for Pactshift. |
 | S2 | [ScopePilot](https://scopepilot.io/) | Vendor feature and pricing claims. |
 | S3 | [ScopeGuardian](https://scopeguardian.ai/) | Vendor feature and pricing claims. |
 | S4 | [ScopeApproval](https://www.scopeapproval.com/) | Vendor feature and pricing claims. |
 | S5 | [Productive pricing](https://productive.io/pricing/) | Adjacent operations software and advertised commercial model. |
-| S6 | [AWS — Amazon Compute SLA](https://aws.amazon.com/compute/sla/) | Resource evidence, availability definitions, exclusions, and credit request process. |
+| S6 | [AWS: Amazon Compute SLA](https://aws.amazon.com/compute/sla/) | Resource evidence, availability definitions, exclusions, and credit request process. |
 | S7 | [NextSignal pricing](https://www.nextsignal.io/pricing) | Existing SLA recovery competitor and its license/success-fee model. |
 | S8 | [WCAG Repair pricing](https://www.wcagrepair.com/pricing) | Existing accessibility reports and monitoring offers. |
-| S9 | [W3C — Selecting Web Accessibility Evaluation Tools](https://www.w3.org/WAI/test-evaluate/tools/selecting/) | Limits of automated accessibility evaluation. |
-| S10 | [Google Cloud — generative AI pricing](https://cloud.google.com/vertex-ai/generative-ai/pricing) | Published Gemini 2.5 Flash-Lite token prices used in the cost scenario. |
-| S11 | [Google Cloud — Cloud Run pricing](https://cloud.google.com/run/pricing) | Request-based resource pricing, region sensitivity, shared billing-account free allowance. |
-| S12 | [Google Cloud — Free Program](https://docs.cloud.google.com/free/docs/free-cloud-features) | Listed request-based Cloud Run and Firestore free allowances, subject to eligibility. |
-| S13 | [Google Cloud — Firestore pricing](https://cloud.google.com/firestore/pricing) | Read/write/storage billing and free quota; backups and other features can cost extra. |
+| S9 | [W3C: Selecting Web Accessibility Evaluation Tools](https://www.w3.org/WAI/test-evaluate/tools/selecting/) | Limits of automated accessibility evaluation. |
+| S10 | [Google Cloud: generative AI pricing](https://cloud.google.com/vertex-ai/generative-ai/pricing) | Published Gemini 2.5 Flash-Lite token prices used in the cost scenario. |
+| S11 | [Google Cloud: Cloud Run pricing](https://cloud.google.com/run/pricing) | Request-based resource pricing, region sensitivity, shared billing-account free allowance. |
+| S12 | [Google Cloud: Free Program](https://docs.cloud.google.com/free/docs/free-cloud-features) | Listed request-based Cloud Run and Firestore free allowances, subject to eligibility. |
+| S13 | [Google Cloud: Firestore pricing](https://cloud.google.com/firestore/pricing) | Read/write/storage billing and free quota; backups and other features can cost extra. |
 | S14 | [Stripe India pricing](https://stripe.com/in/pricing) | Payment processing fee scenarios and account availability. |
 | S15 | [Stripe Billing India pricing](https://stripe.com/in/billing/pricing) | Published pay-as-you-go Billing fee. |
 

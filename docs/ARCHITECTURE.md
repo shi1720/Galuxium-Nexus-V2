@@ -4,6 +4,14 @@
 
 Pactshift's central invariant is that a client's accepted option changes the saved project exactly once, against the agreement they reviewed. Advisory text, price calculation, client authorization, and persistence are separate responsibilities.
 
+## Hosting and browser identity
+
+The canonical browser origin is **https://pactshift.web.app**. Firebase Hosting site `pactshift` serves Vite's `dist` output. Its `/api/**` rewrite reaches the `pactshift` Cloud Run service in `us-central1`; remaining paths serve the SPA entry point. Both resources are in `gen-lang-client-0444960702`. The canonical origin passed all 21 hosted release checks; desktop and mobile workflows were also verified. [Hosted evidence](RELEASE_EVIDENCE.json)
+
+The browser uses relative `/api` URLs and same-origin credentials. Cloud Run's `APP_ORIGIN` must match the Firebase origin. The production cookie is `__session`, with Secure, HttpOnly, SameSite=Lax, Path=/, and no Domain attribute. Firebase permits this cookie through its backend rewrite. Owner mutations still require the session's CSRF token and an exact trusted origin. API responses are marked `no-store`; fingerprinted static assets can be cached. [Firebase session forwarding](https://firebase.google.com/docs/hosting/manage-cache#using_cookies)
+
+Production requests for non-API pages on a different backend hostname redirect to the canonical origin. Direct backend API access does not bypass authentication or mutation-origin checks. Local development continues to use Vite's proxy and the local session-cookie name.
+
 ## Request and decision path
 
 ```mermaid
@@ -38,6 +46,7 @@ AI execution happens outside the database transaction. A slow or retried model r
 | Component | Responsibility | Must not do |
 | --- | --- | --- |
 | React client | Forms, review, before/after presentation, readable errors, exports. | Authorize tenants or supply a trusted price. |
+| Firebase Hosting | Static application delivery, security headers, SPA routing, same-origin API forwarding. | Store private workspace content or replace backend authorization. |
 | Express API | Sessions, origin/CSRF checks, Zod validation, capabilities, rate limits. | Treat model suggestions as authorization. |
 | Domain module | Eligibility, server arithmetic, state transitions, snapshots, audit hashes. | Depend on browser validation. |
 | Store adapter | Commit or roll back the complete mutation. | Partially apply a decision. |
@@ -80,6 +89,8 @@ stateDiagram-v2
 
 A shared request is not edited in place. The owner revokes it, reviews changes against the current project, and creates a new link. Stale draft review regenerates rule evidence. Sharing and acceptance require a matching baseline version. Expiry does not invent a new request state; an expired capability simply cannot authorize a decision.
 
+A deferred request remains a historical decision. **Revisit as new request** captures its content in a separate draft against the current baseline and reruns the analysis path. It does not change the old receipt or reuse its decision authority.
+
 Deliverable status progresses `planned → in_progress → done`. It cannot move backward. A valid exchange moves a selected planned item to `swapped`, preserving its record. A swapped item cannot reactivate. Prerequisites must be completed before dependent work starts. Progress/protection changes create a new baseline version and invalidate older offers.
 
 ## Decision invariants
@@ -96,6 +107,8 @@ Deliverable status progresses `planned → in_progress → done`. It cannot move
 10. Bounds fail explicitly and roll back. History is never silently truncated to fit.
 
 Public offer values come from the request's source baseline, so a later accepted addition cannot rewrite an earlier receipt's budget or date. The receipt calculates the accepted after-state from that historical before-state and the recorded choice.
+
+Calendar-only delivery dates display consistently across time zones. The historical viewer and **Export scope** use the same selected baseline, including version, budget, due date, and deliverables. Plan usage counts stored projects, including archives, matching the server's allowance.
 
 ## Transaction adapters
 

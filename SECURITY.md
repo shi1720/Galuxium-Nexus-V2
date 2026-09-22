@@ -14,7 +14,7 @@ The current release is the supported version. There is no independently maintain
 
 | Boundary | Control | Important limit |
 | --- | --- | --- |
-| Account access | bcrypt password hashing; random session tokens stored through hashed lookup; HttpOnly, SameSite cookies; Secure `__Host-` cookie in production. | No MFA, email verification, or enterprise SSO. |
+| Account access | bcrypt password hashing; random session tokens stored through hashed lookup; host-only `__session` cookie with Secure, HttpOnly, SameSite=Lax, and Path=/ in production. | No MFA, email verification, or enterprise SSO. |
 | Recovery | One-time displayed random recovery code; stored hash; successful recovery rotates the code and invalidates prior sessions. | Losing both password and recovery code has no self-service email reset path. |
 | Workspace isolation | Server-side owner checks on private routes and project lookup within the owner's workspace. | One owner per workspace; no team roles or delegated access. |
 | Browser mutation | Exact trusted origin and authenticated CSRF token checks; strict schema validation. | A stolen authenticated session or compromised owner's device remains a serious risk. |
@@ -41,6 +41,8 @@ When Vertex is enabled, relevant scope boundaries, deliverables, request text, a
 
 ## Cloud and data operations
 
+The canonical browser origin is `https://pactshift.web.app`. Firebase Hosting serves static application assets and rewrites `/api/**` to Cloud Run. Production sessions use `__session` because Firebase Hosting forwards that specially named cookie to the backend. The cookie has no Domain attribute; CSRF and exact-origin validation remain required. API responses use `Cache-Control: no-store`, including authenticated data and public offer responses. Static security headers are also configured in `firebase.json`. [Firebase cookie behavior](https://firebase.google.com/docs/hosting/manage-cache#using_cookies)
+
 The current service uses a dedicated runtime identity and a named Firestore database in a shared Google Cloud project. Database access uses a scoped IAM condition; cloud administrators and deployment maintainers remain trusted. The browser never receives a Firestore service credential.
 
 Expiry is checked at authorization time, independently of asynchronous TTL cleanup. Account deletion removes active app records; provider logs and PITR versions follow their retention windows. PITR is enabled, but no complete restore drill or disaster-recovery SLA is claimed. See [the operations runbook](docs/OPERATIONS.md).
@@ -50,6 +52,8 @@ Resource, object, and rate limits reduce accidental overload and abuse. They are
 ## Verification and known limits
 
 The automated suite covers account recovery/session invalidation, isolation, CSRF/origin rejection, capability expiry/revocation, tampered fees, invalid swaps, concurrent decisions, stale/repeated approvals, audit/citation tampering, AI fallback, and signed billing events. A native Firestore smoke exercises the actual adapter independently of the local HTTP suite. These checks are useful evidence, not a penetration test or a certification.
+
+The current operator-reported result is 46 passing tests, a passing build, and a dependency audit with zero reported vulnerabilities. All 21 hosted checks passed against the Firebase origin, including secure sessions, foreign-origin rejection, workspace isolation, and recovery invalidation. Desktop and mobile product journeys were also verified. Mobile existing-owner login rejected an invalid password, loaded the correct private workspace with valid credentials, and retained the session on refresh. The closed mobile navigation was checked in the accessibility tree after its fix. These bounded checks are not a comprehensive accessibility or security audit. [Hosted evidence](docs/RELEASE_EVIDENCE.json)
 
 The project makes no SOC 2, GDPR certification, PCI scope certification, certified-signature, high-availability, or independent audit claim. Stripe-hosted card entry keeps card details out of the app when billing is configured, but does not by itself certify the whole business.
 

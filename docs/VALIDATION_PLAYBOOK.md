@@ -1,4 +1,4 @@
-# Pactshift — customer validation playbook
+# Pactshift: customer validation playbook
 
 **22 September 2026 · Owner: Shivam Gupta**
 
