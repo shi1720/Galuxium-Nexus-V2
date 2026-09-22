@@ -98,6 +98,8 @@ describe("real frontend workflow contracts", () => {
   });
   it("exports the displayed historical agreement instead of later budget and scope", () => {
     const project = seedWorkspace("test-owner").projects[0];
+    project.description =
+      "Six English pages. Translations and additional revision rounds are excluded.";
     const original = structuredClone(project.baselines[0]);
     project.budgetCents += 150000;
     project.dueDate = "2026-11-01";
@@ -108,7 +110,10 @@ describe("real frontend workflow contracts", () => {
       budgetCents: original.budgetCents,
       dueDate: original.dueDate,
       deliverables: original.deliverables,
+      description:
+        "Six English pages. Translations and additional revision rounds are excluded.",
     });
+    expect(scopeExport(project, original)).not.toHaveProperty("costRateCents");
     expect(scopeExport(project)).toMatchObject({
       version: 2,
       budgetCents: project.budgetCents,

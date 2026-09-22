@@ -51,6 +51,7 @@ export function scopeExport(project: Project, baseline?: Baseline | null) {
   return {
     project: project.name,
     client: project.client,
+    description: project.description,
     currency: project.currency,
     budgetCents: baseline?.budgetCents ?? project.budgetCents,
     version: baseline?.version ?? project.version,

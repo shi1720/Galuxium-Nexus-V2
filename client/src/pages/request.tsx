@@ -54,7 +54,7 @@ export function RequestPage() {
       setDays(r.scheduleDays);
       setReviewed(false);
     }
-  }, [r?.id]);
+  }, [r?.id, r?.status]);
   if (!p || !r)
     return (
       <Empty
@@ -64,13 +64,19 @@ export function RequestPage() {
     );
   const editable = r.status === "draft" || r.status === "revoked";
   const selected = p.deliverables.filter((d) => swapIds.includes(d.id));
-  const swapHours = selected.reduce((n, d) => n + d.hours, 0);
   const eligible = (d: Deliverable) =>
     d.status === "planned" &&
     !d.locked &&
     !p.deliverables.some(
       (x) => x.status !== "swapped" && x.dependsOn.includes(d.id),
     );
+  const unavailableIds = swapIds.filter((id) => {
+    const deliverable = p.deliverables.find((d) => d.id === id);
+    return !deliverable || !eligible(deliverable);
+  });
+  const swapHours = selected
+    .filter((deliverable) => !editable || eligible(deliverable))
+    .reduce((n, d) => n + d.hours, 0);
   const fee = Math.round(hours * p.rateCents);
   const shareUrl = r.shareToken
     ? `${window.location.origin}/offer/${r.shareToken}`
@@ -261,6 +267,33 @@ export function RequestPage() {
               Choose unfinished work you could exchange. The client keeps the
               same budget and delivery date.
             </p>
+            {editable && unavailableIds.length > 0 && (
+              <div className="notice warning">
+                <AlertCircle size={20} />
+                <div>
+                  <strong>
+                    Some selected work can no longer be exchanged.
+                  </strong>
+                  <p>
+                    Started, protected, removed, or dependent work is
+                    unavailable. Remove these selections, then review the
+                    remaining choices.
+                  </p>
+                </div>
+                <button
+                  className="btn secondary small"
+                  disabled={busy}
+                  onClick={() => {
+                    setSwapIds((ids) =>
+                      ids.filter((id) => !unavailableIds.includes(id)),
+                    );
+                    setReviewed(false);
+                  }}
+                >
+                  Remove unavailable items
+                </button>
+              </div>
+            )}
             <div className="swap-options">
               {p.deliverables
                 .filter((d) => d.status !== "swapped")
@@ -277,15 +310,18 @@ export function RequestPage() {
                     >
                       <input
                         type="checkbox"
-                        disabled={!editable || !can}
+                        disabled={
+                          !editable || busy || (!can && !swapIds.includes(d.id))
+                        }
                         checked={swapIds.includes(d.id)}
-                        onChange={(e) =>
+                        onChange={(e) => {
                           setSwapIds(
                             e.target.checked
                               ? [...swapIds, d.id]
                               : swapIds.filter((id) => id !== d.id),
-                          )
-                        }
+                          );
+                          setReviewed(false);
+                        }}
                       />
                       <div>
                         <strong>
@@ -344,9 +380,12 @@ export function RequestPage() {
                 min="0.5"
                 max="1000"
                 step="0.5"
-                disabled={!editable}
+                disabled={!editable || busy}
                 value={hours}
-                onChange={(e) => setHours(Number(e.target.value))}
+                onChange={(e) => {
+                  setHours(Number(e.target.value));
+                  setReviewed(false);
+                }}
               />
             </label>
             <label>
@@ -356,9 +395,12 @@ export function RequestPage() {
                 min="0"
                 max="365"
                 step="1"
-                disabled={!editable}
+                disabled={!editable || busy}
                 value={days}
-                onChange={(e) => setDays(Number(e.target.value))}
+                onChange={(e) => {
+                  setDays(Number(e.target.value));
+                  setReviewed(false);
+                }}
               />
               <small>A swap keeps the current date.</small>
             </label>
@@ -408,10 +450,13 @@ export function RequestPage() {
               A note for your client
               <textarea
                 rows={3}
-                disabled={!editable}
+                disabled={!editable || busy}
                 maxLength={1500}
                 value={note}
-                onChange={(e) => setNote(e.target.value)}
+                onChange={(e) => {
+                  setNote(e.target.value);
+                  setReviewed(false);
+                }}
                 placeholder="We can make this work. Here's how each option affects our plan…"
               />
             </label>
@@ -422,6 +467,7 @@ export function RequestPage() {
                   <input
                     type="checkbox"
                     checked={reviewed}
+                    disabled={busy}
                     onChange={(e) => setReviewed(e.target.checked)}
                   />
                   <span>I reviewed the scope, estimate, and choices.</span>
@@ -431,6 +477,7 @@ export function RequestPage() {
                   disabled={
                     busy ||
                     !reviewed ||
+                    unavailableIds.length > 0 ||
                     (swapIds.length > 0 && swapHours < hours) ||
                     !hours
                   }
@@ -445,7 +492,7 @@ export function RequestPage() {
                 </button>
                 <button
                   className="btn ghost full"
-                  disabled={busy}
+                  disabled={busy || unavailableIds.length > 0}
                   onClick={() => save()}
                 >
                   Save draft
