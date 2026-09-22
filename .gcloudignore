@@ -1,0 +1,17 @@
+.git
+dist/
+dist-server/
+node_modules
+.data
+.env*
+artifacts-local
+deliverables
+output
+tmp
+
+.chart-data-*/
+hack47/
+docs/
+scripts/
+tests/
+**/node_modules/
