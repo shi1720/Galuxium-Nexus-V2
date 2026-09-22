@@ -83,6 +83,7 @@ export function Offer() {
   const o = offer,
     r = o.request;
   const swappedHours = o.removed.reduce((n, d) => n + d.hours, 0);
+  const remainingHours = swappedHours - r.hours;
   const currency = o.currency;
   const nextBudget = o.budgetCents + (choice === "add" ? r.feeCents : 0);
   const shiftedDate = (days: number) => {
@@ -301,13 +302,14 @@ export function Offer() {
                       +{money(r.feeCents, currency)}
                       <span>
                         {r.scheduleDays
-                          ? `+${r.scheduleDays} calendar days`
+                          ? `+${r.scheduleDays} calendar ${r.scheduleDays === 1 ? "day" : "days"}`
                           : "Same delivery date"}
                       </span>
                     </div>
                     <div className="choice-details">
                       <Check size={15} />
-                      {r.hours} hours of additional work
+                      {r.hours} {r.hours === 1 ? "hour" : "hours"} of additional
+                      work
                     </div>
                     <div className="choice-details">
                       <Check size={15} />
@@ -349,7 +351,9 @@ export function Offer() {
                       </div>
                       <div className="choice-details">
                         <Check size={15} />
-                        {swappedHours - r.hours} hours of capacity remain
+                        {remainingHours}{" "}
+                        {remainingHours === 1 ? "hour" : "hours"} of capacity{" "}
+                        {remainingHours === 1 ? "remains" : "remain"}
                       </div>
                     </label>
                   )}
@@ -418,7 +422,7 @@ export function Offer() {
                       {choice === "swap"
                         ? `${r.title} replaces ${o.removed.map((d) => d.title).join(", ")}. The project budget remains ${money(o.budgetCents, currency)}.`
                         : choice === "add"
-                          ? `${money(r.feeCents, currency)} is added to the project budget. ${r.scheduleDays} additional calendar days are agreed.`
+                          ? `${money(r.feeCents, currency)} is added to the project budget. ${r.scheduleDays ? `${r.scheduleDays} additional calendar ${r.scheduleDays === 1 ? "day is" : "days are"} agreed.` : "The delivery date stays the same."}`
                           : "The original plan stays unchanged. This request is deferred, with no new fee."}
                     </p>
                     <p className="fine-print">

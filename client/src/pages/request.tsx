@@ -414,7 +414,9 @@ export function RequestPage() {
               </div>
               <p>
                 {hours} h × {money(p.rateCents, p.currency)}/h ·{" "}
-                {days ? `+${days} calendar days` : "Same delivery date"}
+                {days
+                  ? `+${days} calendar ${days === 1 ? "day" : "days"}`
+                  : "Same delivery date"}
               </p>
             </div>
             <div
