@@ -11,3 +11,8 @@ artifacts-local/
 
 .chart-data-*/
 hack47/
+scripts/video/assets/
+scripts/video/.build/
+deliverables/*.mp4
+.firebase/
+firebase-debug.log

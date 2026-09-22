@@ -101,9 +101,44 @@ export function snapshot(project: Project, reason: string) {
   });
 }
 export function boundWorkspace(workspace: Workspace) {
+  // Reserve one future baseline per project with a live proposal. A decision
+  // stales other proposals on that project, while different projects can each
+  // advance. This prevents unrelated writes from consuming promised capacity.
+  const reservedBytes = workspace.projects.reduce((total, project) => {
+    const pending = project.requests.filter(
+      (request) =>
+        request.status === "shared" &&
+        request.baselineVersion === project.version &&
+        Date.parse(request.shareExpiresAt ?? "") > Date.now(),
+    );
+    if (!pending.length) return total;
+    const largestAddition = Math.max(
+      ...pending.map((request) =>
+        Buffer.byteLength(
+          JSON.stringify({
+            id: "0".repeat(36),
+            title: request.title,
+            description: request.message,
+            hours: request.hours,
+            status: "planned",
+            locked: false,
+            dependsOn: [],
+          }),
+        ),
+      ),
+    );
+    // The new deliverable appears in both live scope and the new snapshot.
+    // Remaining headroom covers the decision, audit entry and baseline metadata.
+    return (
+      total +
+      Buffer.byteLength(JSON.stringify(project.deliverables)) +
+      largestAddition * 2 +
+      5000
+    );
+  }, 0);
   assert(
-    Buffer.byteLength(JSON.stringify(workspace)) <= 720_000,
-    "Workspace storage limit reached. Export and remove data before continuing.",
+    Buffer.byteLength(JSON.stringify(workspace)) + reservedBytes <= 720_000,
+    "Workspace storage limit reached, including room reserved for client decisions. Export and delete a completed project before continuing.",
     409,
     "STORAGE_LIMIT",
   );
@@ -144,6 +179,12 @@ export function shiftDate(date: string, days: number) {
   if (!date || !days) return date;
   const result = new Date(`${date}T12:00:00Z`);
   result.setUTCDate(result.getUTCDate() + days);
+  assert(
+    !Number.isNaN(result.getTime()) &&
+      result.getUTCFullYear() >= 0 &&
+      result.getUTCFullYear() <= 9999,
+    "The resulting delivery date is outside the supported calendar range.",
+  );
   return result.toISOString().slice(0, 10);
 }
 export function normalizeBaselineDates(workspace: Workspace) {

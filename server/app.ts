@@ -37,6 +37,7 @@ import {
   secret,
   seedWorkspace,
   snapshot,
+  shiftDate,
   validateSwap,
 } from "./domain.js";
 import { analyze, vertexEnabled } from "./analysis.js";
@@ -122,9 +123,19 @@ export function createApp(
   const app = express();
   const production =
     options.production ?? process.env.NODE_ENV === "production";
-  const origin =
-    options.origin ?? process.env.APP_ORIGIN ?? "http://localhost:5173";
-  const cookieName = production ? "__Host-pactshift" : "pactshift_session";
+  const configuredOrigin = new URL(
+    options.origin ?? process.env.APP_ORIGIN ?? "http://localhost:5173",
+  );
+  if (
+    !["http:", "https:"].includes(configuredOrigin.protocol) ||
+    (production && configuredOrigin.protocol !== "https:")
+  ) {
+    throw new Error("APP_ORIGIN must be a valid HTTPS origin in production.");
+  }
+  const origin = configuredOrigin.origin;
+  // Firebase Hosting forwards only __session to Cloud Run. Domain stays unset
+  // so this remains host-only, alongside Secure, HttpOnly and SameSite=Lax.
+  const cookieName = production ? "__session" : "pactshift_session";
   const stripe = process.env.STRIPE_SECRET_KEY
     ? new Stripe(process.env.STRIPE_SECRET_KEY)
     : undefined;
@@ -350,6 +361,9 @@ export function createApp(
     );
   }
   function bootstrap({ user, workspace, session }: Identity): Bootstrap {
+    if (workspace.usage.month !== month()) {
+      workspace.usage = { analyses: 0, month: month() };
+    }
     return {
       user: publicUser(user),
       workspace,
@@ -642,6 +656,26 @@ export function createApp(
       }),
     );
   });
+  app.delete("/api/projects/:id", async (req, res) => {
+    const { confirmation } = z
+      .object({ confirmation: z.string() })
+      .strict()
+      .parse(req.body);
+    await mutate(req, ({ workspace }, tx) => {
+      const project = projectFor(workspace, getParam(req, "id"));
+      assert(
+        confirmation === project.name,
+        "Type the project name exactly to confirm deletion.",
+      );
+      for (const change of project.requests) {
+        if (change.shareToken) tx.delete(shareKey(change.shareToken));
+      }
+      workspace.projects = workspace.projects.filter(
+        (item) => item.id !== project.id,
+      );
+    });
+    res.json({ ok: true });
+  });
   app.patch("/api/projects/:id/deliverables/:did", async (req, res) => {
     const value = z
       .object({
@@ -792,28 +826,44 @@ export function createApp(
         value.message,
         value.hours,
       );
-      await store.transaction(async (tx) => {
-        const workspace = await tx.get<Workspace>(
-          workspaceKey(created.workspaceId),
+      try {
+        const enriched = await store.transaction(async (tx) => {
+          const workspace = await tx.get<Workspace>(
+            workspaceKey(created.workspaceId),
+          );
+          const project = workspace?.projects.find(
+            (p) => p.id === created.project.id,
+          );
+          const change = project?.requests.find(
+            (r) => r.id === created.change.id,
+          );
+          if (
+            workspace &&
+            project &&
+            change &&
+            change.status === "draft" &&
+            change.baselineVersion === created.change.baselineVersion &&
+            project.version === created.project.version &&
+            change.hours === created.change.hours
+          ) {
+            change.analysis = analysis;
+            saveWorkspace(tx, workspace);
+            return change;
+          }
+          return undefined;
+        });
+        if (enriched) created.change = enriched;
+      } catch (error) {
+        // The draft and its rules analysis already committed successfully.
+        // Advisory enrichment must not turn that success into a retry/duplicate.
+        console.warn(
+          JSON.stringify({
+            level: "warn",
+            event: "ai.enrichment_not_saved",
+            code: error instanceof AppError ? error.code : "PERSISTENCE_ERROR",
+          }),
         );
-        const project = workspace?.projects.find(
-          (p) => p.id === created.project.id,
-        );
-        const change = project?.requests.find(
-          (r) => r.id === created.change.id,
-        );
-        if (
-          workspace &&
-          project &&
-          change &&
-          change.status === "draft" &&
-          change.baselineVersion === project.version
-        ) {
-          change.analysis = analysis;
-          created.change.analysis = analysis;
-          saveWorkspace(tx, workspace);
-        }
-      });
+      }
     }
     res.status(201).json(created.change);
   });
@@ -836,6 +886,14 @@ export function createApp(
           "NOT_DRAFT",
         );
         const previousHours = change.hours;
+        const before = JSON.stringify({
+          hours: change.hours,
+          swapIds: change.swapIds,
+          note: change.note,
+          scheduleDays: change.scheduleDays,
+          status: change.status,
+          baselineVersion: change.baselineVersion,
+        });
         const needsRebase = change.baselineVersion !== project.version;
         Object.assign(change, value);
         change.status = "draft";
@@ -857,12 +915,22 @@ export function createApp(
             change.hours / project.capacityHoursPerDay,
           );
         if (change.swapIds.length) validateSwap(project, change);
-        audit(
-          project,
-          user.name,
-          "request.updated",
-          `${change.title}; estimate ${change.hours}h; ${change.swapIds.length} exchange items.`,
-        );
+        const after = JSON.stringify({
+          hours: change.hours,
+          swapIds: change.swapIds,
+          note: change.note,
+          scheduleDays: change.scheduleDays,
+          status: change.status,
+          baselineVersion: change.baselineVersion,
+        });
+        if (before !== after) {
+          audit(
+            project,
+            user.name,
+            "request.updated",
+            `${change.title}; estimate ${change.hours}h; ${change.swapIds.length} exchange items.`,
+          );
+        }
         return change;
       }),
     );
@@ -885,17 +953,37 @@ export function createApp(
           "ALREADY_DECIDED",
         );
         assert(
+          change.baselineVersion === project.version,
+          "The baseline changed. Review and save this request before sharing it.",
+          409,
+          "STALE_BASELINE",
+        );
+        if (
+          change.status === "shared" &&
+          change.shareToken &&
+          change.shareExpiresAt &&
+          Date.parse(change.shareExpiresAt) > Date.now()
+        )
+          return change;
+        assert(
           project.audit.length < 99,
           "This project needs room to record a client decision. Export its history and start a new project.",
           409,
           "PROJECT_LIMIT",
         );
         assert(
-          change.baselineVersion === project.version,
-          "The baseline changed. Review and save this request before sharing it.",
+          project.baselines.length < 50 && project.deliverables.length < 80,
+          "This project cannot record another scope change. Export it and start a new project before sharing new proposals.",
           409,
-          "STALE_BASELINE",
+          "PROJECT_LIMIT",
         );
+        assert(
+          project.budgetCents + change.feeCents <= 1_000_000_000,
+          "The additional-budget option exceeds the supported project budget. Reduce the request before sharing.",
+          409,
+          "BUDGET_LIMIT",
+        );
+        shiftDate(project.dueDate, change.scheduleDays);
         if (change.swapIds.length) validateSwap(project, change);
         if (change.shareToken) tx.delete(shareKey(change.shareToken));
         change.shareToken = secret();
@@ -1255,6 +1343,20 @@ export function createApp(
 
   app.use("/api", (_req, _res) => {
     throw new AppError(404, "Endpoint not found.", "NOT_FOUND");
+  });
+  app.use((req, res, next) => {
+    if (
+      production &&
+      (req.method === "GET" || req.method === "HEAD") &&
+      req.hostname !== configuredOrigin.hostname
+    ) {
+      res.redirect(
+        308,
+        `${origin}${req.originalUrl.startsWith("/") ? req.originalUrl : "/"}`,
+      );
+      return;
+    }
+    next();
   });
   if (options.serveClient !== false) {
     const clientPath = path.resolve("dist");

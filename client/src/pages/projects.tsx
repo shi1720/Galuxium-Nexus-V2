@@ -11,12 +11,13 @@ import {
   Search,
   ShieldCheck,
   Sparkles,
+  Trash2,
   X,
 } from "lucide-react";
 import { useState, type FormEvent } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import type { ChangeRequest, Project } from "../../../shared/types";
-import { api, date, download, money } from "../api";
+import { api, date, download, money, scopeExport } from "../api";
 import {
   DeliverableControls,
   NewProjectButton,
@@ -320,7 +321,7 @@ export function ProjectModal({ close }: { close: () => void }) {
                     )
                   }
                 />
-                <Lock size={13} /> Essential work — protect from swaps
+                <Lock size={13} /> Essential work: protect from swaps
               </label>
             </div>
             <button
@@ -364,11 +365,16 @@ export function ProjectModal({ close }: { close: () => void }) {
 
 export function ProjectPage() {
   const { id } = useParams();
+  const nav = useNavigate();
   const { data, refresh, toast } = useApp();
   const p = data!.workspace.projects.find((p) => p.id === id);
   const [tab, setTab] = useState("scope"),
     [intake, setIntake] = useState(false),
-    [version, setVersion] = useState<number | null>(null);
+    [version, setVersion] = useState<number | null>(null),
+    [deleting, setDeleting] = useState(false),
+    [confirmation, setConfirmation] = useState(""),
+    [deleteBusy, setDeleteBusy] = useState(false),
+    [deleteError, setDeleteError] = useState("");
   if (!p)
     return (
       <Empty
@@ -419,9 +425,10 @@ export function ProjectPage() {
           <strong>{date(selected?.dueDate || p.dueDate)}</strong>
         </div>
         <div>
-          <span>Current agreement</span>
+          <span>{selected ? "Agreement displayed" : "Current agreement"}</span>
           <strong>
-            Version {p.version} <Badge tone="green">Recorded</Badge>
+            Version {selected?.version ?? p.version}{" "}
+            <Badge tone="green">Recorded</Badge>
           </strong>
         </div>
       </div>
@@ -431,10 +438,7 @@ export function ProjectPage() {
             className={tab === "scope" ? "active" : ""}
             onClick={() => setTab("scope")}
           >
-            Agreed scope{" "}
-            <span>
-              {p.deliverables.filter((d) => d.status !== "swapped").length}
-            </span>
+            Agreed scope <span>{active.length}</span>
           </button>
           <button
             className={tab === "requests" ? "active" : ""}
@@ -452,16 +456,9 @@ export function ProjectPage() {
         <button
           className="btn ghost small"
           onClick={() => {
-            download(`${p.name}-baseline-v${p.version}.json`, {
-              project: p.name,
-              client: p.client,
-              currency: p.currency,
-              budgetCents: p.budgetCents,
-              version: p.version,
-              dueDate: p.dueDate,
-              deliverables: p.deliverables,
-            });
-            toast("Current agreement exported.");
+            const record = scopeExport(p, selected);
+            download(`${p.name}-baseline-v${record.version}.json`, record);
+            toast(`Agreement version ${record.version} exported.`);
           }}
         >
           <Download size={15} /> Export scope
@@ -558,6 +555,24 @@ export function ProjectPage() {
               {p.archived ? "Restore project" : "Archive project"}
             </button>
           </div>
+          {
+            <div className="notice">
+              <Trash2 size={18} />
+              <div>
+                <strong>Finished with this project?</strong>
+                <p>
+                  Archiving preserves records and still uses a project slot.
+                  Export before permanently removing it.
+                </p>
+              </div>
+              <button
+                className="btn danger small"
+                onClick={() => setDeleting(true)}
+              >
+                Delete project
+              </button>
+            </div>
+          }
         </>
       )}
       {tab === "requests" && (
@@ -637,6 +652,60 @@ export function ProjectPage() {
         </div>
       )}
       {intake && <RequestModal p={p} close={() => setIntake(false)} />}
+      {deleting && (
+        <Modal
+          title="Delete this project?"
+          subtitle="Its scope, requests, history and client links will be removed permanently."
+          close={() => setDeleting(false)}
+        >
+          <p>
+            Export your records first. Your other projects and account will stay
+            available.
+          </p>
+          <button
+            className="btn secondary"
+            onClick={async () => {
+              try {
+                const record = await api("/export");
+                download("pactshift-workspace.json", record);
+              } catch (e) {
+                setDeleteError((e as Error).message);
+              }
+            }}
+          >
+            <Download size={16} /> Export workspace first
+          </button>
+          <label>
+            Type {p.name} to confirm
+            <input
+              value={confirmation}
+              onChange={(e) => setConfirmation(e.target.value)}
+              autoComplete="off"
+            />
+          </label>
+          <ErrorBox error={deleteError} />
+          <button
+            className="btn danger full"
+            disabled={confirmation !== p.name || deleteBusy}
+            onClick={async () => {
+              setDeleteBusy(true);
+              setDeleteError("");
+              try {
+                await api(`/projects/${p.id}`, "DELETE", { confirmation });
+                await refresh();
+                nav("/app/projects");
+                toast("Project removed. Your project slot is available again.");
+              } catch (e) {
+                setDeleteError((e as Error).message);
+              } finally {
+                setDeleteBusy(false);
+              }
+            }}
+          >
+            {deleteBusy ? "Removing project..." : "Permanently delete project"}
+          </button>
+        </Modal>
+      )}
     </>
   );
 }

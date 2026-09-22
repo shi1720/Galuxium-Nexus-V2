@@ -13,7 +13,9 @@ import { MemoryRouter, Route, Routes } from "react-router-dom";
 import { Context } from "../client/src/context";
 import { ProjectModal } from "../client/src/pages/projects";
 import { Offer } from "../client/src/pages/offer";
-import { api } from "../client/src/api";
+import { ScrollReset } from "../client/src/App";
+import { api, date, scopeExport } from "../client/src/api";
+import { seedWorkspace } from "../server/domain";
 import { projectInput } from "../server/validation";
 import type { Bootstrap, PublicOffer } from "../shared/types";
 vi.mock("../client/src/api", async () => ({
@@ -86,6 +88,48 @@ function mountOffer() {
   );
 }
 describe("real frontend workflow contracts", () => {
+  it("preserves agreement dates for users west of UTC", () => {
+    vi.stubEnv("TZ", "America/Los_Angeles");
+    try {
+      expect(date("2026-10-20")).toBe("Oct 20, 2026");
+    } finally {
+      vi.unstubAllEnvs();
+    }
+  });
+  it("exports the displayed historical agreement instead of later budget and scope", () => {
+    const project = seedWorkspace("test-owner").projects[0];
+    const original = structuredClone(project.baselines[0]);
+    project.budgetCents += 150000;
+    project.dueDate = "2026-11-01";
+    project.version = 2;
+    project.deliverables = [];
+    expect(scopeExport(project, original)).toMatchObject({
+      version: 1,
+      budgetCents: original.budgetCents,
+      dueDate: original.dueDate,
+      deliverables: original.deliverables,
+    });
+    expect(scopeExport(project)).toMatchObject({
+      version: 2,
+      budgetCents: project.budgetCents,
+      deliverables: [],
+    });
+  });
+  it("never treats an instrumented scrolling API result as an effect cleanup", () => {
+    const scroll = vi
+      .spyOn(window, "scrollTo")
+      .mockImplementation((() => Promise.resolve()) as typeof window.scrollTo);
+    const view = render(
+      <React.StrictMode>
+        <MemoryRouter>
+          <ScrollReset />
+        </MemoryRouter>
+      </React.StrictMode>,
+    );
+    expect(scroll).toHaveBeenCalledWith(0, 0);
+    expect(() => view.unmount()).not.toThrow();
+    scroll.mockRestore();
+  });
   it("submits a new project payload that the strict server schema actually accepts", async () => {
     mocked.mockResolvedValue({ id: "created" });
     mount(<ProjectModal close={vi.fn()} />);

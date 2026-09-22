@@ -102,12 +102,16 @@ export function Pricing({ landing = false }: { landing?: boolean }) {
           </div>
           <div>
             <strong>
-              {data.workspace.projects.filter((p) => !p.archived).length}
+              {data.workspace.projects.length} /{" "}
+              {plans.find((p) => p.id === data.workspace.plan)?.projects}
             </strong>
-            <span>active projects</span>
+            <span>stored projects, including archived</span>
           </div>
           <div>
-            <strong>{data.workspace.usage.analyses}</strong>
+            <strong>
+              {data.workspace.usage.analyses} /{" "}
+              {plans.find((p) => p.id === data.workspace.plan)?.analyses}
+            </strong>
             <span>analyses used</span>
           </div>
           <span>{data.workspace.usage.month}</span>

@@ -20,8 +20,8 @@ import {
   Sparkles,
 } from "lucide-react";
 import { useEffect, useState } from "react";
-import { Link, useParams } from "react-router-dom";
-import type { Deliverable } from "../../../shared/types";
+import { Link, useNavigate, useParams } from "react-router-dom";
+import type { ChangeRequest, Deliverable } from "../../../shared/types";
 import { api, date, money } from "../api";
 import {
   Badge,
@@ -35,6 +35,7 @@ import { useApp } from "../context";
 
 export function RequestPage() {
   const { id, rid } = useParams();
+  const nav = useNavigate();
   const { data, refresh, toast } = useApp();
   const p = data!.workspace.projects.find((p) => p.id === id),
     r = p?.requests.find((r) => r.id === rid);
@@ -106,17 +107,57 @@ export function RequestPage() {
         description={`${p.client} · Based on agreement version ${r.baselineVersion}`}
         action={<Status value={r.status} />}
       />
-      {r.baselineVersion !== p.version && r.status !== "accepted" && (
-        <div className="notice warning">
-          <AlertCircle size={19} />
+      {r.baselineVersion !== p.version &&
+        r.status !== "accepted" &&
+        r.status !== "deferred" && (
+          <div className="notice warning">
+            <AlertCircle size={19} />
+            <div>
+              <strong>The project has moved on to version {p.version}.</strong>
+              <p>
+                This proposal is out of date. Revoke a shared link, then review
+                and save the draft against the current agreement before sharing
+                again.
+              </p>
+            </div>
+          </div>
+        )}
+      {r.status === "deferred" && (
+        <div className="notice">
+          <Clock size={21} />
           <div>
-            <strong>The project has moved on to version {p.version}.</strong>
+            <strong>Saved for a later conversation.</strong>
             <p>
-              This proposal is out of date. Revoke a shared link, then review
-              and save the draft against the current agreement before sharing
-              again.
+              This decision keeps the original agreement unchanged. When the
+              timing is right, create a fresh proposal against today's scope.
             </p>
           </div>
+          <button
+            className="btn secondary small"
+            disabled={busy || p.archived}
+            onClick={async () => {
+              setBusy(true);
+              setError("");
+              try {
+                const draft = await api<ChangeRequest>(
+                  `/projects/${p.id}/requests`,
+                  "POST",
+                  { title: r.title, message: r.message, hours: r.hours },
+                );
+                await refresh();
+                nav(`/app/projects/${p.id}/requests/${draft.id}`);
+                toast(
+                  "Fresh draft created. The earlier decision is preserved.",
+                );
+              } catch (e) {
+                setError((e as Error).message);
+              } finally {
+                setBusy(false);
+              }
+            }}
+          >
+            {busy ? "Reviewing current scope..." : "Revisit as new request"}
+          </button>
         </div>
       )}
       {r.status === "accepted" && (

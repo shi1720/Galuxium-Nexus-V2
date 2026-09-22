@@ -94,7 +94,7 @@ try {
     !base.startsWith("https:") ||
       (/HttpOnly/i.test(initial.headers.get("set-cookie")) &&
         /Secure/i.test(initial.headers.get("set-cookie")) &&
-        /__Host-pactshift/.test(initial.headers.get("set-cookie"))),
+        /__session=/.test(initial.headers.get("set-cookie"))),
   );
   const p = initial.body.workspace.projects[0],
     r = p.requests[0];

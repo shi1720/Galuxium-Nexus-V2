@@ -1,6 +1,7 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import request from "supertest";
 import Stripe from "stripe";
+import { GoogleAuth } from "google-auth-library";
 import { createApp } from "../server/app.js";
 import { LocalStore } from "../server/store.js";
 import { hash, verifyAudit } from "../server/domain.js";
@@ -53,9 +54,103 @@ beforeEach(() => {
 afterEach(() => {
   vi.restoreAllMocks();
   vi.unstubAllEnvs();
+  vi.unstubAllGlobals();
 });
 
 describe("sessions and account lifecycle", () => {
+  it("uses the only cookie Firebase Hosting forwards and preserves production CSRF and cache protection", async () => {
+    const cleanOrigin = "https://pactshift.web.app";
+    const hosted = createApp(store, {
+      production: true,
+      origin: cleanOrigin + "/",
+      serveClient: false,
+      rateLimits: false,
+    });
+    const login = await request(hosted)
+      .post("/api/auth/demo")
+      .set("Origin", cleanOrigin)
+      .send({});
+    expect(login.status).toBe(201);
+    const setCookie = login.headers["set-cookie"][0] as string;
+    expect(setCookie).toMatch(/^__session=/);
+    expect(setCookie).toContain("Secure");
+    expect(setCookie).toContain("HttpOnly");
+    expect(setCookie).toContain("SameSite=Lax");
+    expect(setCookie).toContain("Path=/");
+    expect(setCookie).not.toContain("Domain=");
+    // Firebase strips every other cookie before forwarding the request.
+    const forwardedCookie = setCookie.split(";")[0];
+    const bootstrap = await request(hosted)
+      .get("/api/bootstrap")
+      .set("Cookie", forwardedCookie);
+    expect(bootstrap.status).toBe(200);
+    expect(bootstrap.headers["cache-control"]).toBe("no-store");
+    expect(
+      (
+        await request(hosted)
+          .patch("/api/workspace")
+          .set("Origin", cleanOrigin)
+          .set("Cookie", forwardedCookie)
+          .send({ name: "Invalid CSRF" })
+      ).status,
+    ).toBe(403);
+    const update = await request(hosted)
+      .patch("/api/workspace")
+      .set("Origin", cleanOrigin)
+      .set("Cookie", forwardedCookie)
+      .set("X-CSRF-Token", login.body.csrfToken)
+      .send({ name: "Hosted Studio" });
+    expect(update.status).toBe(200);
+    const logout = await request(hosted)
+      .post("/api/auth/logout")
+      .set("Origin", cleanOrigin)
+      .set("Cookie", forwardedCookie)
+      .set("X-CSRF-Token", login.body.csrfToken)
+      .send({});
+    expect(logout.status).toBe(200);
+    expect(logout.headers["set-cookie"][0]).toMatch(/^__session=;/);
+    expect(
+      (
+        await request(hosted)
+          .get("/api/bootstrap")
+          .set("Cookie", forwardedCookie)
+      ).status,
+    ).toBe(401);
+  });
+  it("redirects direct-host pages to the canonical site without redirecting API or POST traffic", async () => {
+    const hosted = createApp(store, {
+      production: true,
+      origin: "https://pactshift.web.app",
+      serveClient: false,
+      rateLimits: false,
+    });
+    const page = await request(hosted)
+      .get("/app/projects?view=active")
+      .set("Host", "old-service.run.app");
+    expect(page.status).toBe(308);
+    expect(page.headers.location).toBe(
+      "https://pactshift.web.app/app/projects?view=active",
+    );
+    const api = await request(hosted)
+      .get("/api/bootstrap")
+      .set("Host", "old-service.run.app");
+    expect(api.status).toBe(401);
+    expect(api.headers.location).toBeUndefined();
+    const rejected = await request(hosted)
+      .post("/api/auth/demo")
+      .set("Origin", "https://old-service.run.app")
+      .send({});
+    expect(rejected.status).toBe(403);
+    expect(rejected.headers.location).toBeUndefined();
+    expect(
+      (
+        await request(hosted)
+          .post("/some-page")
+          .set("Host", "old-service.run.app")
+          .send({})
+      ).status,
+    ).not.toBe(308);
+  });
   it("registers, authenticates, rotates recovery, invalidates prior sessions and deletes the workspace", async () => {
     const agent = request.agent(app);
     const registration = await agent
@@ -202,6 +297,188 @@ describe("sessions and account lifecycle", () => {
 });
 
 describe("scope proposal workflow", () => {
+  it("keeps a committed draft successful when optional AI enrichment cannot be persisted", async () => {
+    vi.stubEnv("AI_PROVIDER", "vertex");
+    vi.stubEnv("GOOGLE_CLOUD_PROJECT", "pactshift-test");
+    vi.spyOn(GoogleAuth.prototype, "getAccessToken").mockResolvedValue(
+      "test-token",
+    );
+    vi.spyOn(console, "warn").mockImplementation(() => {});
+    const client = await demo();
+    const project = client.data.workspace.projects[0];
+    vi.stubGlobal(
+      "fetch",
+      vi
+        .fn()
+        .mockResolvedValue(
+          new Response(
+            JSON.stringify({
+              candidates: [
+                {
+                  content: {
+                    parts: [
+                      {
+                        text: JSON.stringify({
+                          classification: "addition",
+                          summary: "Model enrichment",
+                          evidence: [],
+                          assumptions: [],
+                          suggestedHours: 8,
+                        }),
+                      },
+                    ],
+                  },
+                },
+              ],
+            }),
+            { status: 200 },
+          ),
+        ),
+    );
+    const original = store.transaction.bind(store);
+    vi.spyOn(store, "transaction")
+      .mockImplementationOnce(original)
+      .mockRejectedValueOnce(new Error("Temporary persistence failure"));
+    const created = await mutation(
+      client,
+      "post",
+      `/api/projects/${project.id}/requests`,
+      {
+        title: "Retained draft",
+        message: "Please add an additional portfolio gallery.",
+        hours: 8,
+      },
+    );
+    expect(created.status).toBe(201);
+    expect(created.body.analysis.engine).toBe("rules");
+    const latest = (await client.agent.get("/api/bootstrap")).body.workspace;
+    expect(
+      latest.projects[0].requests.filter(
+        (change: ChangeRequest) => change.title === "Retained draft",
+      ),
+    ).toHaveLength(1);
+    expect(latest.usage.analyses).toBe(1);
+    expect(console.warn).toHaveBeenCalledWith(
+      expect.stringContaining("ai.enrichment_not_saved"),
+    );
+  });
+  it("does not spend audit capacity on unchanged saves or rotate links on repeated share clicks", async () => {
+    const client = await demo();
+    const project = client.data.workspace.projects[0];
+    const change = project.requests[0];
+    const saved = await mutation(
+      client,
+      "patch",
+      `/api/projects/${project.id}/requests/${change.id}`,
+      {
+        hours: change.hours,
+        swapIds: change.swapIds,
+        note: change.note,
+        scheduleDays: change.scheduleDays,
+      },
+    );
+    expect(saved.status).toBe(200);
+    const shared = await Promise.all([share(client), share(client)]);
+    expect(shared.map((response) => response.status)).toEqual([200, 200]);
+    expect(shared[0].body.shareToken).toBe(shared[1].body.shareToken);
+    const updated = (await client.agent.get("/api/bootstrap")).body.workspace
+      .projects[0];
+    expect(updated.audit).toHaveLength(project.audit.length + 1);
+    expect(verifyAudit(updated.audit)).toBe(true);
+  });
+  it("ignores AI results produced against an agreement that changed while analysis was running", async () => {
+    vi.stubEnv("AI_PROVIDER", "vertex");
+    vi.stubEnv("GOOGLE_CLOUD_PROJECT", "pactshift-test");
+    vi.spyOn(GoogleAuth.prototype, "getAccessToken").mockResolvedValue(
+      "test-token",
+    );
+    const client = await demo();
+    const project = client.data.workspace.projects[0];
+    let announce!: () => void;
+    const started = new Promise<void>((resolve) => {
+      announce = resolve;
+    });
+    let complete!: (response: Response) => void;
+    vi.stubGlobal(
+      "fetch",
+      vi.fn().mockImplementation(() => {
+        announce();
+        return new Promise<Response>((resolve) => {
+          complete = resolve;
+        });
+      }),
+    );
+    const pending = mutation(
+      client,
+      "post",
+      `/api/projects/${project.id}/requests`,
+      {
+        title: "Late AI request",
+        message: "Please add a new photo gallery to the site.",
+        hours: 8,
+      },
+    ).then((response) => response);
+    await started;
+    const current = (await client.agent.get("/api/bootstrap")).body.workspace
+      .projects[0];
+    const change = current.requests.find(
+      (item: ChangeRequest) => item.title === "Late AI request",
+    );
+    expect(
+      (
+        await mutation(
+          client,
+          "patch",
+          `/api/projects/${project.id}/deliverables/${project.deliverables[2].id}`,
+          { status: "done" },
+        )
+      ).status,
+    ).toBe(200);
+    expect(
+      (
+        await mutation(
+          client,
+          "patch",
+          `/api/projects/${project.id}/requests/${change.id}`,
+          { hours: 6 },
+        )
+      ).status,
+    ).toBe(200);
+    complete(
+      new Response(
+        JSON.stringify({
+          candidates: [
+            {
+              content: {
+                parts: [
+                  {
+                    text: JSON.stringify({
+                      classification: "addition",
+                      summary: "Old agreement analysis",
+                      evidence: [],
+                      assumptions: [],
+                      suggestedHours: 8,
+                    }),
+                  },
+                ],
+              },
+            },
+          ],
+        }),
+        { status: 200 },
+      ),
+    );
+    expect((await pending).status).toBe(201);
+    const refreshed = (
+      await client.agent.get("/api/bootstrap")
+    ).body.workspace.projects[0].requests.find(
+      (item: ChangeRequest) => item.id === change.id,
+    );
+    expect(refreshed.baselineVersion).toBe(2);
+    expect(refreshed.hours).toBe(6);
+    expect(refreshed.analysis.engine).toBe("rules");
+    expect(refreshed.analysis.summary).not.toBe("Old agreement analysis");
+  });
   it("protects real work progress, enforces prerequisites and invalidates old proposals", async () => {
     const client = await demo();
     const p = client.data.workspace.projects[0];
@@ -473,6 +750,99 @@ describe("scope proposal workflow", () => {
 });
 
 describe("bounded production behavior", () => {
+  it("frees quota by deleting only the explicitly confirmed project and revokes its links even at the audit cap", async () => {
+    const client = await demo();
+    const other = await demo();
+    const project = client.data.workspace.projects[0];
+    const shared = await share(client);
+    expect(
+      (
+        await mutation(other, "delete", `/api/projects/${project.id}`, {
+          confirmation: project.name,
+        })
+      ).status,
+    ).toBe(404);
+    expect(
+      (
+        await mutation(client, "delete", `/api/projects/${project.id}`, {
+          confirmation: "wrong",
+        })
+      ).status,
+    ).toBe(400);
+    await store.transaction(async (tx) => {
+      const workspace = await tx.get<Bootstrap["workspace"]>(
+        `workspaces/${client.data.workspace.id}`,
+      );
+      workspace!.projects[0].audit = Array.from({ length: 100 }, () =>
+        structuredClone(workspace!.projects[0].audit[0]),
+      );
+      tx.set(`workspaces/${client.data.workspace.id}`, workspace);
+    });
+    expect(
+      (
+        await mutation(client, "delete", `/api/projects/${project.id}`, {
+          confirmation: project.name,
+        })
+      ).status,
+    ).toBe(200);
+    expect(
+      (await request(app).get(`/api/offers/${shared.body.shareToken}`)).status,
+    ).toBe(410);
+    const remaining = await client.agent.get("/api/bootstrap");
+    expect(remaining.status).toBe(200);
+    expect(remaining.body.workspace.projects).toHaveLength(0);
+    expect(
+      (await other.agent.get("/api/bootstrap")).body.workspace.projects,
+    ).toHaveLength(1);
+  });
+  it("reports the current monthly allowance before a new analysis is created", async () => {
+    const client = await demo();
+    await store.transaction(async (tx) => {
+      const workspace = client.data.workspace;
+      workspace.usage = { month: "2000-01", analyses: 30 };
+      tx.set(`workspaces/${workspace.id}`, workspace);
+    });
+    const latest = (await client.agent.get("/api/bootstrap")).body;
+    expect(latest.workspace.usage).toEqual({
+      month: new Date().toISOString().slice(0, 7),
+      analyses: 0,
+    });
+    expect(
+      (
+        await mutation(
+          client,
+          "post",
+          `/api/projects/${client.data.workspace.projects[0].id}/requests`,
+          {
+            title: "New month request",
+            message: "Please add an additional work page.",
+            hours: 4,
+          },
+        )
+      ).status,
+    ).toBe(201);
+    expect(
+      (await client.agent.get("/api/bootstrap")).body.workspace.usage.analyses,
+    ).toBe(1);
+  });
+  it("does not publish a proposal when its additional scope cannot fit the history limit", async () => {
+    const client = await demo();
+    await store.transaction(async (tx) => {
+      const workspace = client.data.workspace;
+      const project = workspace.projects[0];
+      project.baselines = Array.from({ length: 50 }, () =>
+        structuredClone(project.baselines[0]),
+      );
+      tx.set(`workspaces/${workspace.id}`, workspace);
+    });
+    const proposal = await share(client);
+    expect(proposal.status).toBe(409);
+    expect(proposal.body.code).toBe("PROJECT_LIMIT");
+    const change = (await client.agent.get("/api/bootstrap")).body.workspace
+      .projects[0].requests[0];
+    expect(change.status).toBe("draft");
+    expect(change.shareToken).toBeUndefined();
+  });
   it("reuses a durable checkout attempt and blocks deletion while its payment link is open", async () => {
     vi.stubEnv("STRIPE_SECRET_KEY", "sk_test_fake_for_tests");
     vi.stubEnv("STRIPE_WEBHOOK_SECRET", "whsec_tests");

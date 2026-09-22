@@ -9,10 +9,49 @@ import {
   seedWorkspace,
   swappable,
   verifyAudit,
+  boundWorkspace,
+  shiftDate,
 } from "../server/domain.js";
 import { validateAnalysis } from "../server/analysis.js";
 
 describe("transaction and scope invariants", () => {
+  it("calculates calendar extensions across leap years and rejects unrepresentable dates", () => {
+    expect(shiftDate("2028-02-28", 2)).toBe("2028-03-01");
+    expect(shiftDate("2027-12-31", 1)).toBe("2028-01-01");
+    expect(() => shiftDate("9999-12-31", 1)).toThrow(
+      "supported calendar range",
+    );
+  });
+  it("reserves storage for live proposals before unrelated writes can crowd out a decision", () => {
+    const workspace = seedWorkspace("test");
+    const project = workspace.projects[0];
+    project.deliverables = Array.from({ length: 40 }, (_, index) => ({
+      id: `scope-${index}`,
+      title: `Item ${index}`,
+      description: "x".repeat(1500),
+      hours: 1,
+      status: "planned" as const,
+      locked: false,
+      dependsOn: [],
+    }));
+    project.baselines = Array.from({ length: 10 }, (_, index) => ({
+      version: index + 1,
+      at: project.createdAt,
+      reason: "Agreed scope",
+      budgetCents: project.budgetCents,
+      dueDate: project.dueDate,
+      deliverables: structuredClone(project.deliverables),
+    }));
+    project.version = 10;
+    expect(() => boundWorkspace(workspace)).not.toThrow();
+    const change = project.requests[0];
+    change.baselineVersion = 10;
+    change.status = "shared";
+    change.shareExpiresAt = new Date(Date.now() + 86400000).toISOString();
+    expect(() => boundWorkspace(workspace)).toThrow(
+      "reserved for client decisions",
+    );
+  });
   it("serializes concurrent updates, survives reopen, and rolls back failed writes", async () => {
     const folder = await mkdtemp(path.join(os.tmpdir(), "pactshift-"));
     try {

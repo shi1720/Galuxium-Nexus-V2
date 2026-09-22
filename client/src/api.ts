@@ -1,3 +1,4 @@
+import type { Project, Baseline } from "../../shared/types";
 let csrf = "";
 export function setCsrf(token: string) {
   csrf = token;
@@ -42,7 +43,20 @@ export function date(value: string) {
     month: "short",
     day: "numeric",
     year: "numeric",
+    // Calendar dates have no timezone. Preserve the agreed day everywhere.
+    ...(/^\d{4}-\d{2}-\d{2}$/.test(value) ? { timeZone: "UTC" } : {}),
   });
+}
+export function scopeExport(project: Project, baseline?: Baseline | null) {
+  return {
+    project: project.name,
+    client: project.client,
+    currency: project.currency,
+    budgetCents: baseline?.budgetCents ?? project.budgetCents,
+    version: baseline?.version ?? project.version,
+    dueDate: baseline?.dueDate ?? project.dueDate,
+    deliverables: baseline?.deliverables ?? project.deliverables,
+  };
 }
 export function download(name: string, data: unknown) {
   const blob = new Blob(

@@ -281,6 +281,10 @@ export function Shell() {
 
 export function ScrollReset() {
   const { pathname } = useLocation();
-  useEffect(() => window.scrollTo(0, 0), [pathname]);
+  useEffect(() => {
+    // Browser integrations may wrap scrollTo and return a value. An effect
+    // must only return a cleanup function, never the browser API result.
+    window.scrollTo(0, 0);
+  }, [pathname]);
   return null;
 }
